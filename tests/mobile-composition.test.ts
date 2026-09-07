@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { SlotCore } from '@deepseek-ai/dsh-client-ui-slots'
-import type { ClientContext } from '@deepseek-ai/dsh-client-runtime/client'
+import type { ClientContext } from '../src/client-context.js'
 import { applyResponsiveMobileEnhancements } from '../src/mobile-layout.js'
 
 type Register = (options: Record<string, unknown>, component: () => null) => () => void

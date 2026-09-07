@@ -24,11 +24,11 @@ Mobile View does not reduce that authority. It inherits the selected Harness ses
 - `HttpOnly` and `SameSite=Strict` device cookie.
 - Device expiry and explicit revocation.
 - Authentication before HTTP proxying and WebSocket upgrade.
-- Separation of the Local Link device credential from Harness browser-authentication cookies during proxying and alpha token exchange.
+- Separation of the Local Link device credential from Harness browser-authentication cookies during proxying and the native browser-token exchange.
 - Gateway-side block for desktop administration paths.
 - Structural loopback source, Host, and Origin validation for every desktop administration request; lookalike DNS names fail closed.
 - Gateway authorities declared through the stock connection `trustedHosts` contract without claiming loopback identity.
-- Independent loopback enforcement for Settings, credentials, native Host actions, and agent-preset authoring.
+- Gateway enforcement that keeps Settings, credentials, native Host actions, and agent-preset authoring outside both Local Link access modes even though the RC connection transport authenticates methods uniformly.
 - Bounded local diagnostics with an explicit context allowlist and no credentials, addresses, identifiers, names, paths, or user content.
 - No external relay, telemetry, analytics, or remote log collector.
 
@@ -44,13 +44,13 @@ The report is designed to be safe to review and attach to a public bug report, b
 
 The initial release does not encrypt LAN traffic. Pairing credentials and Harness traffic can be observed by an attacker who can capture traffic on the local network. Use only on a trusted home network while HTTPS support is under development.
 
-### Existing WebSockets
+### WebSocket revocation
 
 Revoking a paired device blocks subsequent requests and reconnects and immediately destroys both sides of every open Local Link WebSocket tunnel authenticated by that device. Tunnels belonging to other paired devices remain connected. Connections opened in the explicit `trusted-lan` mode are not associated with paired-device records and therefore are not affected by paired-device revocation.
 
 ### Version-sensitive Harness integration
 
-Authenticated LAN trust, browser-authentication handoff, remote boot capability filtering, direct Settings navigation, coexistence with the stock Cordis footer action, and responsive AppFrame presentation need small version-sensitive adapters. They do not grant privileged loopback methods, but a Harness upgrade can break presentation or fail closed. Before declaring another Harness version supported, rerun the trust-boundary suite and manually retest pairing, live conversation streaming, Settings navigation, rename, revoke, Cordis coexistence, mobile workspace/session actions, Current session, subagents, theme switching, and third-party conversation tabs.
+Authenticated LAN trust, browser-authentication handoff, the loopback-only RPC list, remote boot capability filtering, direct Settings navigation, coexistence with the stock Cordis footer action, and responsive AppFrame presentation need small version-sensitive adapters. They do not grant privileged Host administration methods, but a Harness upgrade can add or rename a method, break presentation, or fail closed. Before declaring another Harness version supported, audit the current Remote namespaces, rerun the trust-boundary suite, and manually retest pairing, live conversation streaming, Settings navigation, rename, revoke, Cordis coexistence, mobile workspace/session actions, Current session, subagents, theme switching, and third-party conversation tabs.
 
 ### Firewall automation
 

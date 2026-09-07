@@ -5,7 +5,7 @@ import { join } from 'node:path'
 import { tmpdir } from 'node:os'
 import { afterEach, describe, expect, it } from 'vitest'
 import type { ResolvedConfig } from '../src/config.js'
-import { LocalGateway, supportedWebSocketTarget } from '../src/gateway/local-gateway.js'
+import { isLoopbackOnlyRpcTarget, LocalGateway, supportedWebSocketTarget } from '../src/gateway/local-gateway.js'
 
 const cleanups: Array<() => Promise<void>> = []
 afterEach(async () => {
@@ -64,6 +64,23 @@ async function waitForClose(socket: Duplex): Promise<void> {
 }
 
 describe('LocalGateway', () => {
+  it('keeps configuration and native Host RPCs outside the LAN gateway scope', () => {
+    for (const method of [
+      'host.pickDirectory', 'host.openPath',
+      'settings.describe', 'settings.canOpenAgentPresetDirectory', 'settings.update',
+      'settings.replace', 'settings.mutate', 'settings.openDocument',
+      'settings.openSettingsDocument', 'settings.openAgentPresetDirectory',
+      'credentials.describe', 'credentials.set', 'credentials.unset',
+      'agentPreset.read', 'agentPreset.copy', 'agentPreset.openDocument', 'agentPreset.remove',
+    ]) {
+      expect(isLoopbackOnlyRpcTarget(new URL(`/api/${method}`, 'http://gateway.test'))).toBe(true)
+    }
+    expect(isLoopbackOnlyRpcTarget(new URL('/api/session.list', 'http://gateway.test'))).toBe(false)
+    expect(isLoopbackOnlyRpcTarget(new URL('/api/agentPreset.list', 'http://gateway.test'))).toBe(false)
+    expect(isLoopbackOnlyRpcTarget(new URL('/api/agentPreset.select', 'http://gateway.test'))).toBe(false)
+    expect(isLoopbackOnlyRpcTarget(new URL('/api/settings%2Emutate', 'http://gateway.test'))).toBe(true)
+  })
+
   it('allows only the exact stock stream transports used by supported Harness versions', () => {
     expect(supportedWebSocketTarget(new URL('http://gateway.test/api/events.mux'))).toBe(true)
     expect(supportedWebSocketTarget(new URL('http://gateway.test/api/events.host'))).toBe(true)
@@ -84,7 +101,7 @@ describe('LocalGateway', () => {
         id: '@deepseek-ai/dsh-client-ui-layout',
         url: '/plugins/layout.js',
         rev: 'stock-layout',
-        inject: ['@deepseek-ai/dsh-client-runtime', '@deepseek-ai/dsh-client-ui-theme'],
+        inject: ['@deepseek-ai/dsh-client-ui-renderer', '@deepseek-ai/dsh-client-ui-theme'],
       },
     ] }
     let observedHeaders: IncomingHttpHeaders | undefined
@@ -179,6 +196,12 @@ describe('LocalGateway', () => {
     expect(observedHeaders?.['sec-fetch-site']).toBe('cross-site')
     expect(observedHeaders?.cookie).toBeUndefined()
     expect(gateway.trustedAuthorities()).toEqual([`127.0.0.1:${gatewayPort}`])
+
+    const blocked = await fetch(`${origin}/api/settings.describe`, {
+      method: 'POST', headers: { cookie: cookie ?? '', 'content-type': 'application/json' }, body: '{}',
+    })
+    expect(blocked.status).toBe(403)
+    expect(await blocked.text()).toContain('only on the host computer')
 
   })
 

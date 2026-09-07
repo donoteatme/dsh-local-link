@@ -1,8 +1,8 @@
 import React, { useEffect, useSyncExternalStore } from 'react'
-import type { ClientContext, SessionSummary } from '@deepseek-ai/dsh-client-runtime/client'
+import type { SessionSummary } from '@deepseek-ai/dsh-api-session-controller/client'
 import type { PropsLocale, PropsRuntime } from '@deepseek-ai/dsh-client-ui-slots'
 import type {} from '@deepseek-ai/dsh-client-ui-conversation/client'
-import type {} from '@deepseek-ai/dsh-session-log-export/client'
+import type { SessionLogDownloadState } from '@deepseek-ai/dsh-session-log-export/client'
 import {
   Button,
   IconAgentPresetOutline16,
@@ -11,6 +11,7 @@ import {
   IconDownloadOutline16,
   IconFolderOpenOutline16,
 } from '@deepseek-ai/dsh-client-ui-primitives'
+import type { ClientContext } from './client-context.js'
 import { useMobileDialog } from './mobile-dialog.js'
 
 const NS = 'dsh.localLink'
@@ -55,6 +56,14 @@ interface SessionInfoSnapshot {
   readonly open: boolean
   readonly modelSessionId?: string
   readonly model?: string
+}
+
+interface AgentPresetProjection {
+  readonly agentPreset?: string
+}
+
+function sessionAgentPreset(summary: SessionSummary): string | undefined {
+  return (summary.projectionValues as AgentPresetProjection | undefined)?.agentPreset
 }
 
 interface ObservableStore<T> {
@@ -342,9 +351,9 @@ function MobileSessionInfoTrigger({ controller, sessionId, t, useSession }: Trig
 
 function MobileSessionInfoDrawer({ controller, downloads, t, useSessions }: DrawerProps): React.JSX.Element | null {
   const state = useSyncExternalStore(controller.subscribe, controller.getSnapshot)
-  const current = useSessions(snapshot => snapshot.current)
-  const session = useSessions(snapshot => current === undefined ? undefined : snapshot.byId[current]) as SessionSummary | undefined
-  const downloadState = useSyncExternalStore(downloads.store.subscribe, downloads.store.getSnapshot)
+  const current = useSessions((snapshot: import('@deepseek-ai/dsh-api-session-controller/client').SessionListState) => snapshot.current)
+  const session = useSessions((snapshot: import('@deepseek-ai/dsh-api-session-controller/client').SessionListState) => current === undefined ? undefined : snapshot.byId[current]) as SessionSummary | undefined
+  const downloadState = useSyncExternalStore<SessionLogDownloadState>(downloads.store.subscribe, downloads.store.getSnapshot)
   const download = session === undefined ? undefined : downloadState.bySession[String(session.id)]
   const downloading = download?.status === 'downloading'
   const projections = (session?.projectionValues ?? {}) as Readonly<Record<string, unknown>>
@@ -392,7 +401,7 @@ function MobileSessionInfoDrawer({ controller, downloads, t, useSessions }: Draw
         <section className="dllm-session-info-card dllm-session-properties-card">
           <div className="dllm-session-property"><small>{t('mobile.sessionInfo.model')}</small><span>{model ?? t('mobile.sessionInfo.notRecorded')}</span></div>
           <div className="dllm-session-property"><small className="dllm-session-property-label"><IconFolderOpenOutline16 size={13} />{t('mobile.sessionInfo.permissions')}</small><span className="dllm-session-property-value dllm-session-property-access"><PermissionGlyph value={accessValue} />{access ?? t('mobile.sessionInfo.notRecorded')}</span></div>
-          <div className="dllm-session-property"><small className="dllm-session-property-label"><IconAgentPresetOutline16 size={13} />{t('mobile.sessionInfo.agentPreset')}</small><span>{mobilePresetLabel(session.agentPreset, t)}</span></div>
+          <div className="dllm-session-property"><small className="dllm-session-property-label"><IconAgentPresetOutline16 size={13} />{t('mobile.sessionInfo.agentPreset')}</small><span>{mobilePresetLabel(sessionAgentPreset(session), t)}</span></div>
         </section>
         {stats.length > 0 && <section className="dllm-session-info-card dllm-session-stats-card">
           <div className="dllm-session-info-icon" aria-hidden="true"><IconDataOutline16 size={15} /></div>

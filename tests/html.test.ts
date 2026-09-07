@@ -39,7 +39,7 @@ describe('rewriteAuthenticatedIndex', () => {
         id: '@deepseek-ai/dsh-client-ui-layout',
         url: '/plugins/layout.js',
         rev: 'stock-layout',
-        inject: ['@deepseek-ai/dsh-client-runtime', '@deepseek-ai/dsh-client-ui-theme'],
+        inject: ['@deepseek-ai/dsh-client-ui-renderer', '@deepseek-ai/dsh-client-ui-theme'],
       },
       { id: '@deepseek-ai/dsh-client-ui-directory-picker-native', url: '/plugins/native-picker.js', rev: 'native-picker' },
       { id: '@deepseek-ai/dsh-client-ui-directory-picker-browse', url: '/plugins/browser-picker.js', rev: 'browser-picker' },

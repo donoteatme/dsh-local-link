@@ -9,7 +9,7 @@ Lightweight, self-hosted [DeepSeek Harness](https://github.com/deepseek-ai/deeps
 
 Open `Local access`, scan one QR code, and continue the desktop's currently selected Harness session from a phone, tablet, or another computer on the same private network. There is no hosted relay, tunnel provider, native application, account, replacement chat UI, or second workspace picker.
 
-The stable `1.0.0` release also addresses the stock Web client's desktop-first behavior on narrow touch screens. It reorganizes the existing Harness interface into responsive drawers, compact session controls, and touch-friendly actions while keeping the same client, session, plugin slots, permissions, and live agent stream.
+The `1.1.0` line supports DeepSeek Harness `0.1.2-rc.1` and keeps the stock Web client usable on narrow touch screens. It reorganizes the existing Harness interface into responsive drawers, compact session controls, and touch-friendly actions while keeping the same client, session, plugin slots, permissions, and live agent stream.
 
 > **Security boundary:** the gateway uses plain HTTP and is intended only for a trusted private network. Do not expose its port to the internet or use it on public Wi-Fi.
 
@@ -67,10 +67,11 @@ Compatibility is checked against exact DeepSeek Harness versions, including the 
 
 | DeepSeek Harness | Local Link status | Notes |
 | --- | --- | --- |
-| `0.1.2-alpha.1` | **Supported prerelease** | `1.0.0` includes the native browser-authentication and stream compatibility required by this alpha. |
-| `0.1.1-rc.2` | **Supported baseline** | Primary development and complete repository verification target. |
-| `0.1.1-rc.1` | **Verified** | Core LAN, pairing, session, and Mobile View surfaces checked. |
-| `0.1.0-rc.8` | **Verified** | Core LAN, pairing, session, and Mobile View surfaces checked. |
+| `0.1.2-rc.1` | **Supported prerelease** | Current development target; verified with the complete repository gate and the installed Web runtime. Real-phone release acceptance remains separate. |
+| `0.1.2-alpha.1` | **Historical (`1.0.0`)** | Alpha browser-authentication and stream path; not a `1.1.0` compatibility claim. |
+| `0.1.1-rc.2` | **Historical (`1.0.0`)** | Previous development baseline. |
+| `0.1.1-rc.1` | **Historical (`1.0.0`)** | Core LAN, pairing, session, and Mobile View surfaces were checked with `1.0.0`. |
+| `0.1.0-rc.8` | **Historical (`1.0.0`)** | Core LAN, pairing, session, and Mobile View surfaces were checked with `1.0.0`. |
 
 Versions older than `0.1.0-rc.8` are untested and unsupported. Every newer Harness prerelease is checked independently before support is claimed. See the full [compatibility policy](docs/COMPATIBILITY.md).
 
@@ -95,7 +96,7 @@ Phone and tablet browsers automatically receive Mobile View when the viewport is
 
 The stock Harness Web interface is difficult to operate on a phone: persistent desktop navigation consumes the viewport, session controls compete with the conversation title, several actions depend on hover or long press, and subagent information is too dense for a narrow screen. Mobile View makes that existing interface usable without introducing a second client or duplicating Harness business logic.
 
-| Stock narrow-screen behavior | Mobile View in `1.0.0` |
+| Stock narrow-screen behavior | Mobile View in `1.1.0` |
 | --- | --- |
 | Desktop navigation competes with the conversation | Workspace and session navigation opens as a dismissible left drawer |
 | Session metadata crowds the header | Context, model, access, preset, activity, and export move into a compact right drawer |
@@ -177,7 +178,7 @@ The gateway does not create a second Harness session. During first connection it
 
 Authorization uses a 256-bit random cookie credential. Only its SHA-256 hash is stored. The editable name and detected device/browser text never grant access.
 
-The LAN authority is declared through Harness's official connection `trustedHosts` contract. This enables ordinary session API and WebSocket traffic without pretending that the phone is loopback; Settings, credentials, native Host actions, and agent-preset authoring remain loopback-only.
+The LAN authority is declared through Harness's official connection `trustedHosts` contract. This enables authenticated session API and WebSocket traffic without pretending that the phone is loopback. Because Harness `0.1.2-rc.1` authenticates the transport as a whole, Local Link itself rejects the configuration, credential, native Host-action, and agent-preset-authoring RPCs that earlier supported Harness builds kept loopback-only.
 
 ## Configuration
 
@@ -252,12 +253,12 @@ Project documentation:
 
 - LAN traffic is not encrypted in the current preview gateway.
 - Revocation blocks new requests and reconnects and terminates every open Local Link WebSocket authenticated by the revoked device.
-- A light/dark choice made from a remote browser is memory-backed by Harness `0.1.1-rc.2`; reload returns to the Host preference and resolves `system` against the remote device.
+- A light/dark choice made from a remote browser is page-scoped in the supported Harness builds; reload returns to the Host preference and resolves `system` against the remote device.
 - Invitations use the highest-ranked private IPv4 interface detected at startup; choosing among multiple LAN interfaces is not exposed yet.
-- The shortcut that opens a specific Settings section uses a small semantic compatibility bridge because Harness `0.1.1-rc.2` exposes `openSection` only to onboarding.
+- The shortcut that opens a specific Settings section uses a small semantic compatibility bridge because Harness does not expose a general settings-navigation service.
 - Harness's footer-action container needs a compatibility layout rule when the full-width Cordis action is present.
 - Mobile View targets viewports from 360 CSS pixels wide, but third-party fixed-width views, virtual keyboards, orientation changes, split-screen browsers, and operating-system text scaling still require real-device acceptance.
-- Plugin-owned buttons and text inputs use Harness `Button` and `Input` primitives and their semantic variants. Harness `0.1.1-rc.2` still has no public responsive-shell, spacing, or radius contract, so mobile geometry, responsive compositions, and the few missing primitive icons remain documented design-system compatibility risks.
+- Plugin-owned buttons and text inputs use Harness `Button` and `Input` primitives and their semantic variants. Harness `0.1.2-rc.1` still has no complete public responsive-shell, spacing, or radius contract, so mobile geometry, responsive compositions, and the few missing primitive icons remain documented design-system compatibility risks.
 
 ## Development disclosure
 

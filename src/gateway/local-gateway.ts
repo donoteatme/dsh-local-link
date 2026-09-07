@@ -19,6 +19,25 @@ import { CONNECT_PATH, PAIR_PAGE, PAIR_PATH } from './pair-page.js'
 const COOKIE_NAME = 'dsh_local_link_device'
 const MAX_PAIR_BODY = 4096
 const STREAM_PATHS = new Set(['/api/events.mux', '/api/events.host', '/api/remote.mux'])
+const LOOPBACK_ONLY_RPC_METHODS = new Set([
+  'host.pickDirectory',
+  'host.openPath',
+  'settings.describe',
+  'settings.canOpenAgentPresetDirectory',
+  'settings.update',
+  'settings.replace',
+  'settings.mutate',
+  'settings.openDocument',
+  'settings.openSettingsDocument',
+  'settings.openAgentPresetDirectory',
+  'credentials.describe',
+  'credentials.set',
+  'credentials.unset',
+  'agentPreset.read',
+  'agentPreset.copy',
+  'agentPreset.openDocument',
+  'agentPreset.remove',
+])
 const HOP_BY_HOP_HEADERS = new Set([
   'connection', 'keep-alive', 'proxy-authenticate', 'proxy-authorization',
   'proxy-connection', 'te', 'trailer', 'transfer-encoding', 'upgrade',
@@ -117,6 +136,15 @@ function requestKind(pathname: string): string {
 
 export function supportedWebSocketTarget(target: URL): boolean {
   return target.search === '' && STREAM_PATHS.has(target.pathname)
+}
+
+export function isLoopbackOnlyRpcTarget(target: URL): boolean {
+  if (!target.pathname.startsWith('/api/')) return false
+  try {
+    return LOOPBACK_ONLY_RPC_METHODS.has(decodeURIComponent(target.pathname.slice('/api/'.length)))
+  } catch {
+    return true
+  }
 }
 
 export class LocalGateway {
@@ -320,6 +348,11 @@ export class LocalGateway {
         void this.diagnostics.record('error', 'BROWSER_AUTH_HANDOFF_FAILED', { reason: 'invalid_target' })
         send(response, 502, 'DeepSeek Harness browser authentication is unavailable')
       }
+      return
+    }
+    if (isLoopbackOnlyRpcTarget(url)) {
+      void this.diagnostics.record('warn', 'REQUEST_REJECTED', { reason: 'loopback_only_rpc' })
+      send(response, 403, 'This DeepSeek Harness action is available only on the host computer.')
       return
     }
     const interceptIndex = request.method === 'GET' && url.pathname === '/'

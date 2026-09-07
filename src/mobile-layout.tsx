@@ -1,5 +1,4 @@
 import React, { useSyncExternalStore } from 'react'
-import type { ClientContext } from '@deepseek-ai/dsh-client-runtime/client'
 import type { ILayout } from '@deepseek-ai/dsh-client-ui-layout/client'
 import type {} from '@deepseek-ai/dsh-client-locale/client'
 import type {} from '@deepseek-ai/dsh-client-ui-sidebar/client'
@@ -7,6 +6,7 @@ import type {} from '@deepseek-ai/dsh-client-ui-theme/client'
 import type {} from '@deepseek-ai/dsh-client-ui-conversation/client'
 import type {} from '@deepseek-ai/dsh-session-log-export/client'
 import { Button, IconDarkOutline16, IconLightOutline16 } from '@deepseek-ai/dsh-client-ui-primitives'
+import type { ClientContext } from './client-context.js'
 import { applyMobileSubagents, MOBILE_SUBAGENT_STYLES } from './mobile-subagents.js'
 import { applyMobileSessionInfo, MOBILE_SESSION_INFO_STYLES } from './mobile-session-info.js'
 

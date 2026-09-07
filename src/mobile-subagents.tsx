@@ -1,15 +1,12 @@
 import React, { useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react'
-import type {
-  ClientContext,
-  SessionId,
-  SessionListState,
-  SessionSummary,
-} from '@deepseek-ai/dsh-client-runtime/client'
-import type { SubagentAddress, SubagentListEntry } from '@deepseek-ai/dsh-client-connection/client'
+import type { SessionListState, SessionSummary } from '@deepseek-ai/dsh-api-session-controller/client'
+import type { SessionId } from '@deepseek-ai/dsh-client-connection/client'
+import type { SubagentAddress, SubagentListEntry } from '@deepseek-ai/dsh-subagent/client'
 import type { PropsLocale, PropsRuntime } from '@deepseek-ai/dsh-client-ui-slots'
 import type {} from '@deepseek-ai/dsh-client-ui-conversation/client'
 import type {} from '@deepseek-ai/dsh-client-ui-layout/client'
 import { Button, IconChevronRightOutline14, IconCloseOutline16, StateDot } from '@deepseek-ai/dsh-client-ui-primitives'
+import type { ClientContext } from './client-context.js'
 import { useMobileDialog } from './mobile-dialog.js'
 
 const NS = 'dsh.localLink'
@@ -172,8 +169,8 @@ function directCatalogMetrics(rootSessionId: SessionId, catalogs: SessionListSta
 }
 
 function MobileSubagentTrigger({ controller, sessionId, t, useSessions }: TriggerProps): React.JSX.Element | null {
-  const summaries = useSessions(state => state.byId)
-  const catalogs = useSessions(state => state.subagentsByParent)
+  const summaries = useSessions((state: SessionListState) => state.byId)
+  const catalogs = useSessions((state: SessionListState) => state.subagentsByParent)
   const rootSessionId = mobileSubagentRoot(sessionId, summaries)
   const metrics = useMemo(() => mobileSubagentMetrics(rootSessionId, summaries), [rootSessionId, summaries])
   const direct = useMemo(() => directCatalogMetrics(rootSessionId, catalogs), [catalogs, rootSessionId])
@@ -191,7 +188,7 @@ function MobileSubagentTrigger({ controller, sessionId, t, useSessions }: Trigge
 }
 
 function MobileLineageTitle({ displayTitle, lineageSessionId, openTitle, useSessions }: LineageProps): React.JSX.Element | null {
-  const summary = useSessions(state => state.byId[lineageSessionId])
+  const summary = useSessions((state: SessionListState) => state.byId[lineageSessionId])
   const currentRef = useRef<HTMLSpanElement>(null)
   useEffect(() => {
     if (summary?.origin === 'subagent' && openTitle === undefined) {
@@ -285,8 +282,8 @@ function CatalogRows({ actions, catalogs, expanded, level, onOpen, onToggle, par
 function MobileSubagentSheet({ actions, controller, t, useSessions }: SheetProps): React.JSX.Element | null {
   const snapshot = useSyncExternalStore(controller.subscribe, controller.getSnapshot)
   const rootSessionId = snapshot.rootSessionId
-  const catalogs = useSessions(state => state.subagentsByParent)
-  const summaries = useSessions(state => state.byId)
+  const catalogs = useSessions((state: SessionListState) => state.subagentsByParent)
+  const summaries = useSessions((state: SessionListState) => state.byId)
   const [expanded, setExpanded] = useState<ReadonlySet<SessionId>>(() => new Set())
   const [now, setNow] = useState(() => Date.now())
   const observed = useRef(new Set<SessionId>())
@@ -307,7 +304,7 @@ function MobileSubagentSheet({ actions, controller, t, useSessions }: SheetProps
     if (rootSessionId === undefined) return
     const visibleParents = new Set<SessionId>([rootSessionId, ...expanded])
     const running = [...visibleParents].some(parentSessionId => catalogs[parentSessionId]?.entries
-      .some(entry => entry.kind === 'child' && entry.activity === 'running') === true)
+      .some((entry: SubagentListEntry) => entry.kind === 'child' && entry.activity === 'running') === true)
     if (!running) return
     setNow(Date.now())
     const timer = window.setInterval(() => setNow(Date.now()), 1_000)

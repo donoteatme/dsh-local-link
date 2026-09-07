@@ -2,11 +2,23 @@
 
 All notable changes to this project are documented here.
 
-## Unreleased
+## 1.1.0 — 2026-09-07
+
+### Changed
+
+- Migrated the browser client to the DeepSeek Harness `0.1.2-rc.1` Cordis context, API session controller, UI renderer/session services, session projections, and subagent contracts.
+- Pinned the direct development contracts to the exact RC and moved the plugin's Cordis peer contract to `^4.0.2`.
+- Kept the previous trusted-LAN scope after the RC removed method-specific transport tiers: Local Link now rejects configuration, credential, native Host-action, and agent-preset-authoring RPCs at its own gateway.
 
 ### Fixed
 
 - Revoking a paired device now immediately closes every open Local Link WebSocket tunnel authenticated by that device, while leaving other paired devices and `trusted-lan` connections untouched.
+
+### Validated
+
+- Passed the full TypeScript, test, build, peer-dependency, and package gates against the exact `0.1.2-rc.1` contracts.
+- Booted the installed `0.1.2-rc.1` Web profile with Local Link, completed pairing and native browser authentication through the Ethernet gateway, verified the loopback-only Settings RPC returns `403`, and revoked the test device.
+- Verified the new client services in the live boot manifest, opened the desktop QR panel, and exercised the responsive AppFrame at `390 × 844` without browser console errors.
 
 ## 1.0.0 — 2026-08-29
 

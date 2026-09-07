@@ -26,6 +26,7 @@ describe('release contract', () => {
     expect(mobileView).toContain("matchMedia('(max-width: 834px)')")
     expect(packageSource).toContain('docs/COMPATIBILITY.md')
     const compatibilityVersions = [
+      '0.1.2-rc.1',
       '0.1.2-alpha.1',
       '0.1.1-rc.2',
       '0.1.1-rc.1',
@@ -40,6 +41,10 @@ describe('release contract', () => {
     expect(readmeCompatibilityPositions).toEqual([...readmeCompatibilityPositions].sort((left, right) => left - right))
     expect(compatibility).toContain('Supported prerelease')
     expect(readme).toContain('Supported prerelease')
+    expect(packageSource).not.toContain('@deepseek-ai/dsh-client-runtime')
+    expect(packageSource).toContain('@deepseek-ai/dsh-api-session-controller')
+    expect(packageSource).toContain('@deepseek-ai/dsh-client-ui-renderer')
+    expect(packageSource).toContain('@deepseek-ai/dsh-client-ui-session')
     expect(compatibility).not.toContain('Known incompatible')
     expect(compatibility).not.toContain('| Evidence |')
     expect(compatibility).not.toContain('images/compat-')

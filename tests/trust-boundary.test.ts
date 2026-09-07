@@ -34,19 +34,27 @@ async function rpcStatus(port: number, authority: string, method: string): Promi
 }
 
 describe('Harness connection trust boundary', () => {
-  it('allows a declared LAN authority through the normal fence but keeps privileged RPC loopback-only', async () => {
+  it('allows a declared LAN authority through the RC trust fence without bypassing browser authentication', async () => {
     const context = new Context()
     contexts.push(context)
     await context.plugin(WebServer, { host: '127.0.0.1', port: 0 })
-    await context.plugin(Object.assign(applyConnection, { inject: ['webServer'] }), {
+    const records = new Map<string, unknown>()
+    await context.provide('credentials', {
+      modifyRecord: async (key: string, mutate: (current: unknown) => Promise<unknown>) => {
+        const current = records.get(key)
+        const replacement = await mutate(current)
+        if (replacement !== undefined) records.set(key, replacement)
+        return records.get(key)
+      },
+    })
+    await context.plugin(Object.assign(applyConnection, { inject: ['webServer', 'credentials'] }), {
       trustedHosts: ['gateway.test:3088'],
     })
 
-    expect(await rpcStatus(context.webServer.port, 'gateway.test:3088', 'session.list')).toBe(404)
-    expect(await rpcStatus(context.webServer.port, 'gateway.test:3088', 'settings.describe')).toBe(403)
-    expect(await rpcStatus(context.webServer.port, 'gateway.test:3088', 'credentials.describe')).toBe(403)
-    expect(await rpcStatus(context.webServer.port, 'gateway.test:3088', 'host.openPath')).toBe(403)
-    expect(await rpcStatus(context.webServer.port, 'gateway.test:3088', 'agentPreset.read')).toBe(403)
+    // The RC authenticates normal RPC routes before dispatch. Reaching 401
+    // proves the declared gateway authority passed the Host/Origin fence.
+    expect(await rpcStatus(context.webServer.port, 'gateway.test:3088', 'session.list')).toBe(401)
+    expect(await rpcStatus(context.webServer.port, 'untrusted.test:3088', 'session.list')).toBe(403)
   })
 
   it('wires gateway authorities into the public trustedHosts config without mutating client loopback state', async () => {

@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import type { SessionId, SessionSummary } from '@deepseek-ai/dsh-client-runtime/client'
+import type { SessionSummary } from '@deepseek-ai/dsh-api-session-controller/client'
+import type { SessionId } from '@deepseek-ai/dsh-client-connection/client'
 import {
   MOBILE_SUBAGENT_DOCK_ID,
   MOBILE_SUBAGENT_LINEAGE_PRIORITY,

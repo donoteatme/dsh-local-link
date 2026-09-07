@@ -45,6 +45,8 @@ describe('mobile session information', () => {
     })
     expect(permissionName({ currentValue: 'workspace-write', options: [{ value: 'workspace-write', name: 'Workspace write' }] })).toBe('Workspace write')
     expect(permissionValue({ currentValue: 'workspace-write', options: [{ value: 'workspace-write', name: 'Workspace write' }] })).toBe('workspace-write')
+    expect(formatSessionTokens(87.349)).toBe('87.3')
+    expect(formatSessionTokens(732.499999999)).toBe('732')
     expect(formatSessionTokens(65_500)).toBe('65.5K')
     expect(formatSessionDuration(162_000)).toBe('2m42s')
     expect(currentModelName({

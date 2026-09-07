@@ -38,11 +38,11 @@ Diagnostics are enabled by default because a local networking plugin otherwise b
 
 The report is designed to be safe to review and attach to a public bug report, but users should still inspect copied JSON before sharing it. Disabling `diagnosticsEnabled` prevents new events from being retained.
 
-## Known limitations of the preview
+## Known limitations
 
 ### Plain HTTP
 
-The initial release does not encrypt LAN traffic. Pairing credentials and Harness traffic can be observed by an attacker who can capture traffic on the local network. Use only on a trusted home network while HTTPS support is under development.
+The current release does not encrypt LAN traffic. Pairing credentials and Harness traffic can be observed by an attacker who can capture traffic on the local network. Use only on a trusted private network while HTTPS support is under development.
 
 ### WebSocket revocation
 

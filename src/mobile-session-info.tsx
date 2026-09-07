@@ -183,7 +183,7 @@ function finiteNumber(value: unknown): number | undefined {
 
 export function formatSessionTokens(value: number): string {
   const scaled = (n: number): string => n >= 100 ? String(Math.round(n)) : String(Math.round(n * 10) / 10)
-  if (value < 1_000) return String(value)
+  if (value < 1_000) return scaled(value)
   if (value < 1_000_000) return `${scaled(value / 1_000)}K`
   return `${scaled(value / 1_000_000)}M`
 }

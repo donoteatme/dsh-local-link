@@ -4,4 +4,4 @@
 
 Until a private reporting address is configured, open a GitHub Security Advisory in the repository. Include the affected version, deployment topology, reproduction steps, and expected impact.
 
-The current preview uses unencrypted HTTP on the local network. This is a documented limitation rather than a supported internet-facing deployment. See [docs/SECURITY.md](docs/SECURITY.md) for the complete threat model and safe-use boundary.
+The current release uses unencrypted HTTP on the local network. This is a documented limitation rather than a supported internet-facing deployment. See [docs/SECURITY.md](docs/SECURITY.md) for the complete threat model and safe-use boundary.

@@ -57,7 +57,7 @@ Harness `0.1.2-rc.1` does not expose a complete public responsive shell, drawer 
 
 Mobile View uses the same one-use invitation, paired-browser credential, private-network validation, HTTP/WebSocket gateway, and revocation behavior as desktop-shaped remote access. It adds no relay, account, analytics, fingerprinting, polling loop, or duplicate conversation store.
 
-LAN traffic remains plain HTTP in this preview. Revoking a paired device blocks its next request or reconnect and immediately terminates its open Local Link WebSocket tunnels. See the full [security model](SECURITY.md) before enabling the gateway.
+LAN traffic remains plain HTTP in this release. Revoking a paired device blocks its next request or reconnect and immediately terminates its open Local Link WebSocket tunnels. See the full [security model](SECURITY.md) before enabling the gateway.
 
 ## Release acceptance checklist
 

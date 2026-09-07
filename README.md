@@ -5,13 +5,19 @@
 [![Awesome DSH Plugin](https://awesome-dsh-plugin.com/badge.svg)](https://awesome-dsh-plugin.com)
 [![license](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-Lightweight, self-hosted [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) plugin for paired LAN access and a practical Mobile View of the existing DSH Web client.
+Use the same [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) Web session from a phone, tablet, or another computer on your trusted private network. `dsh-local-link` adds one-time QR pairing and a responsive Mobile View to the stock DSH client—without a hosted relay, cloud account, native app, replacement chat UI, or second workspace picker.
 
-Open `Local access`, scan one QR code, and continue the desktop's currently selected Harness session from a phone, tablet, or another computer on the same private network. There is no hosted relay, tunnel provider, native application, account, replacement chat UI, or second workspace picker.
+Open `Local access`, scan the QR code, and the paired browser arrives at the desktop's currently selected Harness session with the same live conversation, permissions, workspaces, and plugin surfaces.
 
 The `1.1.0` line supports DeepSeek Harness `0.1.2-rc.1` and keeps the stock Web client usable on narrow touch screens. It reorganizes the existing Harness interface into responsive drawers, compact session controls, and touch-friendly actions while keeping the same client, session, plugin slots, permissions, and live agent stream.
 
 > **Security boundary:** the gateway uses plain HTTP and is intended only for a trusted private network. Do not expose its port to the internet or use it on public Wi-Fi.
+
+<p align="center">
+  <img src="docs/images/local-access-qr.jpg" width="960" alt="DeepSeek Harness with dsh-local-link open: one-time QR pairing to the current stock Harness session">
+</p>
+
+<p align="center"><sub>One Harness session, paired directly across the trusted LAN.</sub></p>
 
 ## Focused product scope
 
@@ -87,10 +93,6 @@ Versions older than `0.1.0-rc.8` are untested and unsupported. Every newer Harne
 The invitation is one-use, expires after five minutes by default, and is replaced immediately when `Generate another code` is selected.
 
 Phone and tablet browsers automatically receive Mobile View when the viewport is at most 834 CSS pixels wide. The same responsive behavior can be previewed with browser device emulation; no URL parameter, user-agent switch, or second client is involved.
-
-<p align="center">
-  <img src="docs/images/local-access-qr.jpg" width="960" alt="DeepSeek Harness with the Local access QR panel, one-time link, and Paired devices shortcut">
-</p>
 
 ## Mobile View
 
@@ -251,7 +253,7 @@ Project documentation:
 
 ## Known limitations
 
-- LAN traffic is not encrypted in the current preview gateway.
+- LAN traffic is not encrypted; the current gateway uses plain HTTP.
 - Revocation blocks new requests and reconnects and terminates every open Local Link WebSocket authenticated by the revoked device.
 - A light/dark choice made from a remote browser is page-scoped in the supported Harness builds; reload returns to the Host preference and resolves `system` against the remote device.
 - Invitations use the highest-ranked private IPv4 interface detected at startup; choosing among multiple LAN interfaces is not exposed yet.

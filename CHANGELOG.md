@@ -4,6 +4,8 @@ All notable changes to this project are documented here.
 
 ## 1.1.0 — 2026-09-07
 
+`1.1.0` updates Local Link for DeepSeek Harness `0.1.2-rc.1` while preserving the existing trusted-private-LAN product and security boundary. It keeps the stock Harness client, session state, permissions, and live stream instead of introducing a second remote client.
+
 ### Changed
 
 - Migrated the browser client to the DeepSeek Harness `0.1.2-rc.1` Cordis context, API session controller, UI renderer/session services, session projections, and subagent contracts.
@@ -13,10 +15,13 @@ All notable changes to this project are documented here.
 ### Fixed
 
 - Revoking a paired device now immediately closes every open Local Link WebSocket tunnel authenticated by that device, while leaving other paired devices and `trusted-lan` connections untouched.
+- The mobile appearance control now follows the left drawer transition instead of appearing abruptly while the drawer opens or closes.
+- Current session statistics now round fractional token throughput consistently instead of exposing the raw floating-point tail.
 
 ### Validated
 
 - Passed the full TypeScript, test, build, peer-dependency, and package gates against the exact `0.1.2-rc.1` contracts.
+- Passed all 98 automated tests across 16 test files, the production dependency audit with no known vulnerabilities, and `npm publish --dry-run` for `dsh-local-link@1.1.0`.
 - Booted the installed `0.1.2-rc.1` Web profile with Local Link, completed pairing and native browser authentication through the Ethernet gateway, verified the loopback-only Settings RPC returns `403`, and revoked the test device.
 - Verified the new client services in the live boot manifest, opened the desktop QR panel, and exercised the responsive AppFrame at `390 × 844` without browser console errors.
 

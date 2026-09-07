@@ -69,17 +69,18 @@ The profile points at the checkout, so rebuild after changing client code and re
 
 ## Compatibility
 
-Compatibility is checked against exact DeepSeek Harness versions, including the real Web client, Local Access pairing flow, responsive navigation, Current session, and subagent surfaces. A successful package installation alone is not treated as compatibility proof.
+Compatibility is checked against exact DeepSeek Harness versions—not inferred from a successful installation.
 
-| DeepSeek Harness | Local Link status | Notes |
-| --- | --- | --- |
-| `0.1.2-rc.1` | **Supported prerelease** | Current development target; verified with the complete repository gate and the installed Web runtime. Real-phone release acceptance remains separate. |
-| `0.1.2-alpha.1` | **Historical (`1.0.0`)** | Alpha browser-authentication and stream path; not a `1.1.0` compatibility claim. |
-| `0.1.1-rc.2` | **Historical (`1.0.0`)** | Previous development baseline. |
-| `0.1.1-rc.1` | **Historical (`1.0.0`)** | Core LAN, pairing, session, and Mobile View surfaces were checked with `1.0.0`. |
-| `0.1.0-rc.8` | **Historical (`1.0.0`)** | Core LAN, pairing, session, and Mobile View surfaces were checked with `1.0.0`. |
+| DeepSeek Harness | Local Link status |
+| --- | --- |
+| `0.1.2-rc.1` | **Supported release** |
+| `0.1.1-rc.2` | **Verified** |
+| `0.1.1-rc.1` | **Verified** |
+| `0.1.0-rc.8` | **Verified** |
 
-Versions older than `0.1.0-rc.8` are untested and unsupported. Every newer Harness prerelease is checked independently before support is claimed. See the full [compatibility policy](docs/COMPATIBILITY.md).
+All four rows were checked with the packed `1.1.0` release. The historical RC gate covers a clean Web profile, the real client, Local Access, pairing, authenticated HTTP and WebSocket traffic, revoke, and responsive navigation at `390 × 844`. `0.1.2-rc.1` remains the development baseline and receives the complete current-runtime gate.
+
+Versions older than `0.1.0-rc.8` are untested and unsupported. New Harness versions are checked independently. See [Compatibility](docs/COMPATIBILITY.md) for the evidence and remaining real-device boundary.
 
 ## Use
 

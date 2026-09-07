@@ -27,7 +27,6 @@ describe('release contract', () => {
     expect(packageSource).toContain('docs/COMPATIBILITY.md')
     const compatibilityVersions = [
       '0.1.2-rc.1',
-      '0.1.2-alpha.1',
       '0.1.1-rc.2',
       '0.1.1-rc.1',
       '0.1.0-rc.8',
@@ -39,8 +38,10 @@ describe('release contract', () => {
     expect(readme).toContain('## Compatibility')
     expect(readmeCompatibilityPositions.every(position => position >= 0)).toBe(true)
     expect(readmeCompatibilityPositions).toEqual([...readmeCompatibilityPositions].sort((left, right) => left - right))
-    expect(compatibility).toContain('Supported prerelease')
-    expect(readme).toContain('Supported prerelease')
+    expect(compatibility).toContain('Supported release')
+    expect(readme).toContain('Supported release')
+    expect(compatibility).not.toContain('| `0.1.2-alpha.1`')
+    expect(readme).not.toContain('| `0.1.2-alpha.1`')
     expect(packageSource).not.toContain('@deepseek-ai/dsh-client-runtime')
     expect(packageSource).toContain('@deepseek-ai/dsh-api-session-controller')
     expect(packageSource).toContain('@deepseek-ai/dsh-client-ui-renderer')

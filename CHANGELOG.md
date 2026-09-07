@@ -24,6 +24,7 @@ All notable changes to this project are documented here.
 - Passed all 98 automated tests across 16 test files, the production dependency audit with no known vulnerabilities, and `npm publish --dry-run` for `dsh-local-link@1.1.0`.
 - Booted the installed `0.1.2-rc.1` Web profile with Local Link, completed pairing and native browser authentication through the Ethernet gateway, verified the loopback-only Settings RPC returns `403`, and revoked the test device.
 - Verified the new client services in the live boot manifest, opened the desktop QR panel, and exercised the responsive AppFrame at `390 × 844` without browser console errors.
+- Installed the packed `1.1.0` release into fresh `0.1.1-rc.2`, `0.1.1-rc.1`, and `0.1.0-rc.8` profiles. Every RC passed real-client Local Access, `390 × 844` responsive navigation, private-LAN pairing, authenticated HTTP and `/api/events.mux`, plus revoke with immediate socket closure and a subsequent `401`.
 
 ## 1.0.0 — 2026-08-29
 

@@ -57,7 +57,7 @@ Harness `0.1.1-rc.2` does not expose a public responsive shell, drawer recipe, s
 
 Mobile View uses the same one-use invitation, paired-browser credential, private-network validation, HTTP/WebSocket gateway, and revocation behavior as desktop-shaped remote access. It adds no relay, account, analytics, fingerprinting, polling loop, or duplicate conversation store.
 
-LAN traffic remains plain HTTP in this preview, and an already-open WebSocket is not immediately terminated by revoke. See the full [security model](SECURITY.md) before enabling the gateway.
+LAN traffic remains plain HTTP in this preview. Revoking a paired device blocks its next request or reconnect and immediately terminates its open Local Link WebSocket tunnels. See the full [security model](SECURITY.md) before enabling the gateway.
 
 ## Release acceptance checklist
 
@@ -70,4 +70,4 @@ LAN traffic remains plain HTTP in this preview, and an already-open WebSocket is
 - Confirm `Add workspace` is absent on every authenticated remote gateway page and remains available on the loopback desktop.
 - Check a third-party conversation tab and Cordis panel if installed.
 - Test the four viewport sizes above plus one real phone in portrait and landscape.
-- Revoke the device and verify subsequent requests and reconnects are rejected.
+- Revoke the device and verify its live stream disconnects immediately while subsequent requests and reconnects are rejected.

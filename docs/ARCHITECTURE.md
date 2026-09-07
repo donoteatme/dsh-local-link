@@ -157,7 +157,7 @@ This boundary keeps connection setup in one place and persistent access manageme
 
 ### WebSocket upgrade
 
-The same network, Host, and credential checks run before an exact supported stream path is passed to the upstream server. Release candidates use `/api/events.mux` or `/api/events.host`; `0.1.2-alpha.1` uses `/api/remote.mux`. Query-bearing and arbitrary WebSocket paths remain rejected. Revocation affects new connections; a future milestone will actively close already-open sockets for a revoked device.
+The same network, Host, and credential checks run before an exact supported stream path is passed to the upstream server. Release candidates use `/api/events.mux` or `/api/events.host`; `0.1.2-alpha.1` uses `/api/remote.mux`. Query-bearing and arbitrary WebSocket paths remain rejected. In `pairing` mode, the gateway retains an in-memory association between each upgraded tunnel and the paired-device ID that authorized it. Revocation destroys both sides of every tunnel for that ID after removing the credential, without disconnecting other devices. `trusted-lan` tunnels have no paired-device identity and remain outside this lifecycle.
 
 ## Dependency policy
 

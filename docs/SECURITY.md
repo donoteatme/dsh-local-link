@@ -46,7 +46,7 @@ The initial release does not encrypt LAN traffic. Pairing credentials and Harnes
 
 ### Existing WebSockets
 
-Revoking a device blocks subsequent requests and reconnects, but an already-upgraded WebSocket is not actively terminated yet. Restart the Harness Web process to close every active connection immediately.
+Revoking a paired device blocks subsequent requests and reconnects and immediately destroys both sides of every open Local Link WebSocket tunnel authenticated by that device. Tunnels belonging to other paired devices remain connected. Connections opened in the explicit `trusted-lan` mode are not associated with paired-device records and therefore are not affected by paired-device revocation.
 
 ### Version-sensitive Harness integration
 

@@ -2,6 +2,12 @@
 
 All notable changes to this project are documented here.
 
+## Unreleased
+
+### Fixed
+
+- Revoking a paired device now immediately closes every open Local Link WebSocket tunnel authenticated by that device, while leaving other paired devices and `trusted-lan` connections untouched.
+
 ## 1.0.0 — 2026-08-29
 
 The first stable Local Link release. It keeps the focused same-LAN access and

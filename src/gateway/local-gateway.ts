@@ -124,6 +124,7 @@ export class LocalGateway {
   private readonly pairing: PairingTokens
   private readonly diagnostics: DiagnosticStore
   private readonly upgradedSockets = new Set<Socket>()
+  private readonly deviceSockets = new Map<string, Set<Socket>>()
   private server: Server | undefined
   private addresses: string[] = []
   private browserAuthenticationUrl: ((baseUrl: string) => string) | undefined
@@ -198,7 +199,11 @@ export class LocalGateway {
   }
 
   async revoke(id: string): Promise<boolean> {
-    return this.devices.revoke(id)
+    try {
+      return await this.devices.revoke(id)
+    } finally {
+      this.closeDeviceSockets(id)
+    }
   }
 
   async renameDevice(id: string, name: unknown): Promise<DeviceView | undefined> {
@@ -211,6 +216,7 @@ export class LocalGateway {
     if (server === undefined) return
     for (const socket of this.upgradedSockets) socket.destroy()
     this.upgradedSockets.clear()
+    this.deviceSockets.clear()
     await new Promise<void>((resolve, reject) => server.close(error => error === undefined ? resolve() : reject(error)))
   }
 
@@ -222,6 +228,26 @@ export class LocalGateway {
   private authorized(request: IncomingMessage): boolean {
     return this.config.accessMode === 'trusted-lan'
       || this.devices.authorize(cookieValue(request, COOKIE_NAME)) !== undefined
+  }
+
+  private trackDeviceSocket(deviceId: string, socket: Socket): void {
+    const sockets = this.deviceSockets.get(deviceId) ?? new Set<Socket>()
+    sockets.add(socket)
+    this.deviceSockets.set(deviceId, sockets)
+  }
+
+  private untrackDeviceSocket(deviceId: string, socket: Socket): void {
+    const sockets = this.deviceSockets.get(deviceId)
+    if (sockets === undefined) return
+    sockets.delete(socket)
+    if (sockets.size === 0) this.deviceSockets.delete(deviceId)
+  }
+
+  private closeDeviceSockets(deviceId: string): void {
+    const sockets = this.deviceSockets.get(deviceId)
+    if (sockets === undefined) return
+    this.deviceSockets.delete(deviceId)
+    for (const socket of sockets) socket.destroy()
   }
 
   private async handle(request: IncomingMessage, response: ServerResponse): Promise<void> {
@@ -345,7 +371,10 @@ export class LocalGateway {
 
   private async proxyWebSocket(request: IncomingMessage, client: Socket, head: Buffer): Promise<void> {
     const trusted = this.requestTrusted(request)
-    const authorized = trusted && this.authorized(request)
+    const device = this.config.accessMode === 'pairing'
+      ? this.devices.authorize(cookieValue(request, COOKIE_NAME))
+      : undefined
+    const authorized = trusted && (this.config.accessMode === 'trusted-lan' || device !== undefined)
     if (!trusted || !authorized) {
       void this.diagnostics.record('warn', 'WS_REJECTED', { reason: trusted ? 'unauthorized' : 'untrusted_source' })
       client.end('HTTP/1.1 401 Unauthorized\r\nConnection: close\r\n\r\n')
@@ -360,9 +389,17 @@ export class LocalGateway {
     const upstream = connect(Number(this.config.upstreamOrigin.port), this.config.upstreamOrigin.hostname)
     this.upgradedSockets.add(client)
     this.upgradedSockets.add(upstream)
+    if (device !== undefined) {
+      this.trackDeviceSocket(device.id, client)
+      this.trackDeviceSocket(device.id, upstream)
+    }
     const cleanup = (): void => {
       this.upgradedSockets.delete(client)
       this.upgradedSockets.delete(upstream)
+      if (device !== undefined) {
+        this.untrackDeviceSocket(device.id, client)
+        this.untrackDeviceSocket(device.id, upstream)
+      }
     }
     client.once('close', cleanup)
     upstream.once('close', cleanup)

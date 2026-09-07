@@ -134,7 +134,7 @@ The responsive enhancements target viewports from 360 through 834 CSS pixels wid
 On the Harness computer, use `Paired devices` in the QR panel or open `Settings → Local access`. Each new browser starts as `My device`; its subtitle is detected automatically, for example `Phone · Chrome`, `Tablet · Safari`, or `Computer · Edge`.
 
 - `Rename` changes display metadata only.
-- `Revoke` invalidates the browser credential for subsequent HTTP requests and reconnects.
+- `Revoke` invalidates the browser credential and immediately closes its open Local Link WebSocket connections.
 - A cleared cookie, private window, new browser profile, or revoked device needs a new invitation.
 
 Browsers do not reliably distinguish laptops from desktop computers, so both are shown as `Computer`.
@@ -251,7 +251,7 @@ Project documentation:
 ## Known limitations
 
 - LAN traffic is not encrypted in the current preview gateway.
-- Revocation blocks new requests and reconnects but does not yet terminate an already-open WebSocket.
+- Revocation blocks new requests and reconnects and terminates every open Local Link WebSocket authenticated by the revoked device.
 - A light/dark choice made from a remote browser is memory-backed by Harness `0.1.1-rc.2`; reload returns to the Host preference and resolves `system` against the remote device.
 - Invitations use the highest-ranked private IPv4 interface detected at startup; choosing among multiple LAN interfaces is not exposed yet.
 - The shortcut that opens a specific Settings section uses a small semantic compatibility bridge because Harness `0.1.1-rc.2` exposes `openSection` only to onboarding.

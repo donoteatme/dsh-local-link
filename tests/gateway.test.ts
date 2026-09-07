@@ -1,5 +1,6 @@
-import { createServer, type IncomingHttpHeaders } from 'node:http'
+import { createServer, request as requestHttp, type IncomingHttpHeaders } from 'node:http'
 import { mkdtemp, rm } from 'node:fs/promises'
+import type { Duplex } from 'node:stream'
 import { join } from 'node:path'
 import { tmpdir } from 'node:os'
 import { afterEach, describe, expect, it } from 'vitest'
@@ -18,6 +19,48 @@ async function availablePort(): Promise<number> {
   if (address === null || typeof address === 'string') throw new Error('no TCP address')
   await new Promise<void>((resolve, reject) => server.close(error => error === undefined ? resolve() : reject(error)))
   return address.port
+}
+
+async function pairDevice(gateway: LocalGateway, origin: string, browser: string): Promise<{ cookie: string; id: string }> {
+  const pairing = gateway.issuePairing()
+  const response = await fetch(`${origin}/__dsh-local-link/pair`, {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({
+      token: new URL(pairing.url).hash.slice('#token='.length),
+      device: { type: 'Phone', browser },
+    }),
+  })
+  const cookie = response.headers.get('set-cookie')?.split(';', 1)[0] ?? ''
+  const credential = decodeURIComponent(cookie.slice(cookie.indexOf('=') + 1))
+  return { cookie, id: credential.slice(0, credential.indexOf('.')) }
+}
+
+async function openWebSocket(origin: string, cookie: string): Promise<Duplex> {
+  const target = new URL('/api/remote.mux', origin)
+  return new Promise<Duplex>((resolve, reject) => {
+    const request = requestHttp({
+      hostname: target.hostname,
+      port: target.port,
+      path: target.pathname,
+      headers: { connection: 'Upgrade', upgrade: 'websocket', cookie, origin },
+    })
+    request.once('upgrade', (_response, socket) => resolve(socket))
+    request.once('response', response => reject(new Error(`WebSocket rejected with ${response.statusCode ?? 0}`)))
+    request.once('error', reject)
+    request.end()
+  })
+}
+
+async function waitForClose(socket: Duplex): Promise<void> {
+  if (socket.destroyed) return
+  await new Promise<void>((resolve, reject) => {
+    const timeout = setTimeout(() => reject(new Error('socket did not close after revoke')), 2_000)
+    socket.once('close', () => {
+      clearTimeout(timeout)
+      resolve()
+    })
+  })
 }
 
 describe('LocalGateway', () => {
@@ -195,5 +238,54 @@ describe('LocalGateway', () => {
     const index = await fetch(origin, { headers: { cookie: `${deviceCookie}; ${harnessCookie}` } })
     expect(index.status).toBe(200)
     expect(observedCookie).toBe(harnessCookie)
+  })
+
+  it('closes every open WebSocket for the revoked device without affecting another paired device', async () => {
+    const root = await mkdtemp(join(tmpdir(), 'dsh-local-link-revoke-ws-'))
+    cleanups.push(() => rm(root, { recursive: true, force: true }))
+    const upstreamPort = await availablePort()
+    const gatewayPort = await availablePort()
+    const upstreamSockets = new Set<Duplex>()
+    const upstream = createServer((_request, response) => {
+      response.writeHead(200, { 'content-type': 'text/plain' })
+      response.end('Harness')
+    })
+    upstream.on('upgrade', (_request, socket) => {
+      upstreamSockets.add(socket)
+      socket.once('close', () => upstreamSockets.delete(socket))
+      socket.write('HTTP/1.1 101 Switching Protocols\r\nConnection: Upgrade\r\nUpgrade: websocket\r\n\r\n')
+    })
+    await new Promise<void>((resolve, reject) => upstream.listen(upstreamPort, '127.0.0.1', resolve).once('error', reject))
+    cleanups.push(async () => {
+      for (const socket of upstreamSockets) socket.destroy()
+      await new Promise<void>((resolve, reject) => upstream.close(error => error === undefined ? resolve() : reject(error)))
+    })
+
+    const gateway = new LocalGateway({
+      listenHost: '127.0.0.1', listenPort: gatewayPort,
+      upstreamOrigin: new URL(`http://127.0.0.1:${upstreamPort}`), accessMode: 'pairing',
+      pairingTtlMs: 300_000, deviceTtlMs: 86_400_000,
+      diagnosticsEnabled: true, diagnosticsMaxEntries: 15,
+      diagnosticsFile: join(root, 'diagnostics.json'), stateFile: join(root, 'devices.json'),
+    })
+    await gateway.start()
+    cleanups.push(() => gateway.close())
+    const origin = `http://127.0.0.1:${gatewayPort}`
+    const revokedDevice = await pairDevice(gateway, origin, 'Chrome')
+    const retainedDevice = await pairDevice(gateway, origin, 'Safari')
+    const revokedSocketA = await openWebSocket(origin, revokedDevice.cookie)
+    const revokedSocketB = await openWebSocket(origin, revokedDevice.cookie)
+    const retainedSocket = await openWebSocket(origin, retainedDevice.cookie)
+    cleanups.push(async () => {
+      revokedSocketA.destroy()
+      revokedSocketB.destroy()
+      retainedSocket.destroy()
+    })
+
+    expect(await gateway.revoke(revokedDevice.id)).toBe(true)
+    await Promise.all([waitForClose(revokedSocketA), waitForClose(revokedSocketB)])
+    expect(retainedSocket.destroyed).toBe(false)
+    expect((await fetch(origin, { headers: { cookie: revokedDevice.cookie } })).status).toBe(401)
+    expect((await fetch(origin, { headers: { cookie: retainedDevice.cookie } })).status).toBe(200)
   })
 })

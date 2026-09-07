@@ -175,11 +175,11 @@ function StockMobileControls({ layout, labels, themeController, useDarkLabel, us
 
 export const MOBILE_STOCK_LAYOUT_STYLES = `
 body[data-dsh-local-link-mobile]{overflow:hidden}
-body[data-dsh-local-link-mobile] #root>[data-slot="root"]>div:has(>[data-shell-overlay]){--dllm-side-drawer-width:min(88vw,340px);grid-template-columns:minmax(0,1fr)!important}
+body[data-dsh-local-link-mobile] #root>[data-slot="root"]>div:has(>[data-shell-overlay]){--dllm-side-drawer-width:min(88vw,340px);--dllm-side-drawer-closed-transform:translateX(calc(-1 * var(--dllm-side-drawer-width) - 14px));grid-template-columns:minmax(0,1fr)!important}
 body[data-dsh-local-link-mobile] #root>[data-slot="root"]>div:has(>[data-shell-overlay])>:first-child{position:fixed;z-index:70;inset:0 auto 0 0;box-sizing:border-box;width:var(--dllm-side-drawer-width);transform:translateX(0);transition:transform 190ms cubic-bezier(.22,1,.36,1);box-shadow:18px 0 46px rgb(15 23 42 / 18%)}
 body[data-dsh-local-link-mobile] #root>[data-slot="root"]>div:has(>[data-shell-overlay])>:first-child>[data-slot="sidebar"]>*{width:100%!important;height:100%!important}
 body[data-dsh-local-link-mobile] [data-slot="sidebar"] button[class*="_brand"]{flex:0 0 auto!important;inline-size:max-content!important;width:max-content!important;min-width:0!important;max-width:calc(100% - 72px)!important;margin-right:auto!important}
-body[data-dsh-local-link-mobile] #root>[data-slot="root"]>div[data-sidebar-collapsed]:has(>[data-shell-overlay])>:first-child{transform:translateX(-104%);pointer-events:none}
+body[data-dsh-local-link-mobile] #root>[data-slot="root"]>div[data-sidebar-collapsed]:has(>[data-shell-overlay])>:first-child{transform:var(--dllm-side-drawer-closed-transform);pointer-events:none}
 body[data-dsh-local-link-mobile] #root>[data-slot="root"]>div:has(>[data-shell-overlay])>:nth-child(2){grid-column:1;grid-row:1;min-width:0}
 body[data-dsh-local-link-mobile] #root>[data-slot="root"]>div:has(>[data-shell-overlay])>:nth-child(3){display:none}
 body[data-dsh-local-link-mobile] #root>[data-slot="root"]>div:has(>[data-shell-overlay])>[data-shell-overlay]{z-index:90}
@@ -189,9 +189,9 @@ body[data-dsh-local-link-mobile] #root>[data-slot="root"]>div:has(>[data-shell-o
 body[data-dsh-local-link-mobile] #root>[data-slot="root"]>div:not([data-sidebar-collapsed]):has(>[data-shell-overlay]) .dllm-stock-menu{opacity:0;transform:scale(.9);pointer-events:none}
 .dllm-stock-scrim{position:absolute;inset:0 0 0 var(--dllm-side-drawer-width);width:auto;height:auto;min-height:0;padding:0;border:0;border-radius:0;background:var(--dsw-alias-bg-mask-1,rgb(15 23 42 / 40%))!important;pointer-events:auto}
 body[data-dsh-local-link-mobile] #root>[data-slot="root"]>div[data-sidebar-collapsed]:has(>[data-shell-overlay]) .dllm-stock-scrim{opacity:0;pointer-events:none}
-.dllm-stock-theme{position:absolute;top:calc(env(safe-area-inset-top) + 22px);left:calc(var(--dllm-side-drawer-width) - 76px);display:grid;width:28px;height:28px;place-items:center;pointer-events:auto}
+.dllm-stock-theme{position:absolute;top:calc(env(safe-area-inset-top) + 22px);left:calc(var(--dllm-side-drawer-width) - 76px);display:grid;width:28px;height:28px;place-items:center;opacity:1;visibility:visible;transform:translateX(0);pointer-events:auto;transition:opacity 120ms ease,transform 190ms cubic-bezier(.22,1,.36,1),visibility 0s linear 0s}
 .dllm-stock-theme .dllm-theme-button{box-sizing:border-box!important;width:28px!important;min-width:28px!important;max-width:28px!important;height:28px!important;min-height:28px!important;padding:0!important;border-radius:50%!important}
-body[data-dsh-local-link-mobile] #root>[data-slot="root"]>div[data-sidebar-collapsed]:has(>[data-shell-overlay]) .dllm-stock-theme{display:none}
+body[data-dsh-local-link-mobile] #root>[data-slot="root"]>div[data-sidebar-collapsed]:has(>[data-shell-overlay]) .dllm-stock-theme{opacity:0;visibility:hidden;transform:var(--dllm-side-drawer-closed-transform);pointer-events:none;transition:opacity 120ms ease,transform 190ms cubic-bezier(.22,1,.36,1),visibility 0s linear 190ms}
 body[data-dsh-local-link-mobile] [data-slot="sidebar.workspaces"] button[aria-label="Add workspace"],body[data-dsh-local-link-mobile] [data-slot="sidebar.workspaces"] button[aria-label="添加工作区"]{display:none!important}
 body[data-dsh-local-link-mobile] [role="treeitem"][aria-selected="true"]>span:has(button[aria-label]){display:inline-flex!important;margin-left:4px}
 body[data-dsh-local-link-mobile] [role="treeitem"][aria-selected="true"]>span:has(button[aria-label]) button{width:28px!important;height:28px!important}
@@ -208,7 +208,7 @@ body[data-dsh-local-link-mobile] [data-turn-tail]>div:last-child>button[aria-has
 body[data-dsh-local-link-mobile] [data-turn-tail]>div:last-child>button[aria-haspopup=dialog][aria-expanded]::before{content:"";display:block;width:16px;height:16px;background:currentColor;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='black' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M10.8 2.4a1.7 1.7 0 0 1 2.4 2.4L6 12l-3 .6.6-3 7.2-7.2Z'/%3E%3Cpath d='m9.8 3.4 2.8 2.8'/%3E%3C/svg%3E") center/16px 16px no-repeat}
 body[data-dsh-local-link-mobile] [data-cordis-panel]{left:max(12px,env(safe-area-inset-left))!important;right:max(12px,env(safe-area-inset-right))!important;bottom:max(12px,env(safe-area-inset-bottom))!important;width:auto!important;max-width:none!important;max-height:calc(100dvh - max(24px,env(safe-area-inset-top) + env(safe-area-inset-bottom)))!important}
 body[data-dsh-local-link-mobile] [data-cordis-row]{min-width:0}body[data-dsh-local-link-mobile] [data-cordis-row]>div{min-width:0;flex-wrap:wrap}body[data-dsh-local-link-mobile] [data-cordis-row] span{max-width:100%;white-space:normal;overflow-wrap:anywhere;text-overflow:clip}
-@media(prefers-reduced-motion:reduce){body[data-dsh-local-link-mobile] #root>[data-slot="root"]>div:has(>[data-shell-overlay])>:first-child{transition:none!important}}
+@media(prefers-reduced-motion:reduce){body[data-dsh-local-link-mobile] #root>[data-slot="root"]>div:has(>[data-shell-overlay])>:first-child,.dllm-stock-theme{transition:none!important}}
 ${MOBILE_SUBAGENT_STYLES}
 ${MOBILE_SESSION_INFO_STYLES}
 `

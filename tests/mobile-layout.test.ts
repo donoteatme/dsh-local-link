@@ -128,8 +128,9 @@ describe('mobile root composition', () => {
 
   it('keeps the stock conversation full-width and moves its native sidebar off-canvas', () => {
     expect(MOBILE_STOCK_LAYOUT_STYLES).toContain('--dllm-side-drawer-width:min(88vw,340px)')
+    expect(MOBILE_STOCK_LAYOUT_STYLES).toContain('--dllm-side-drawer-closed-transform:translateX(')
     expect(MOBILE_STOCK_LAYOUT_STYLES).toContain('grid-template-columns:minmax(0,1fr)!important')
-    expect(MOBILE_STOCK_LAYOUT_STYLES).toContain('transform:translateX(-104%)')
+    expect(MOBILE_STOCK_LAYOUT_STYLES).toContain('transform:var(--dllm-side-drawer-closed-transform)')
     expect(MOBILE_STOCK_LAYOUT_STYLES).toContain('padding-left:max(58px')
     expect(MOBILE_STOCK_LAYOUT_STYLES).toContain('padding-right:max(10px,env(safe-area-inset-right))')
     expect(MOBILE_STOCK_LAYOUT_STYLES).not.toContain('width:56px')
@@ -149,6 +150,9 @@ describe('mobile root composition', () => {
     expect(MOBILE_STOCK_LAYOUT_STYLES).toContain('.dllm-stock-theme{')
     expect(MOBILE_STOCK_LAYOUT_STYLES).toContain('.dllm-stock-theme .dllm-theme-button{')
     expect(MOBILE_STOCK_LAYOUT_STYLES).toContain('width:28px!important;min-width:28px!important;max-width:28px!important')
+    expect(MOBILE_STOCK_LAYOUT_STYLES).toContain('transform 190ms cubic-bezier(.22,1,.36,1)')
+    expect(MOBILE_STOCK_LAYOUT_STYLES).toContain('.dllm-stock-theme{opacity:0;visibility:hidden;transform:var(--dllm-side-drawer-closed-transform);pointer-events:none')
+    expect(MOBILE_STOCK_LAYOUT_STYLES).not.toContain('.dllm-stock-theme{display:none}')
     expect(MOBILE_STOCK_LAYOUT_STYLES).toContain('>[data-slot="sidebar"]>*{width:100%!important;height:100%!important}')
     expect(MOBILE_STOCK_LAYOUT_STYLES).not.toContain('.dllm-theme-switch')
   })

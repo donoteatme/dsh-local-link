@@ -2,6 +2,21 @@
 
 All notable changes to this project are documented here.
 
+## 1.1.1 — 2026-09-12
+
+### Changed
+
+- Moved the supported DeepSeek Harness baseline to `0.1.5-rc.1` and expanded the optional Host peer contract for the exact `0.1.5-rc.1` and `0.1.5-rc.2` packages.
+- Updated direct development contracts to `0.1.5-rc.1` while preserving the Local Link gateway, pairing, and trusted-private-LAN boundary unchanged.
+- Documented the new Harness `main`/`rightbar` AppFrame alongside the retained session, composer, sidebar, Settings, and overlay slots used by Local Link.
+
+### Validated
+
+- Composed and booted clean Web profiles with the packed plugin source on Harness `0.1.5-rc.1` (`latest`) and `0.1.5-rc.2` (`next`).
+- Rechecked the packed `1.1.1` artifact on `0.1.2-rc.1`, `0.1.1-rc.2`, `0.1.1-rc.1`, and `0.1.0-rc.8`: every isolated profile passed plugin peer checks, pairing, authenticated HTTP and WebSocket traffic, immediate socket closure on revoke, and post-revoke rejection.
+- Verified desktop Local Access and QR generation plus responsive activation and navigation at `390 × 844` without client exceptions on both exact Harness versions.
+- Passed typecheck, all 98 automated tests across 16 files, production build, and package dry-run against both `0.1.5` RC contract sets.
+
 ## 1.1.0 — 2026-09-07
 
 `1.1.0` updates Local Link for DeepSeek Harness `0.1.2-rc.1` while preserving the existing trusted-private-LAN product and security boundary. It keeps the stock Harness client, session state, permissions, and live stream instead of introducing a second remote client.

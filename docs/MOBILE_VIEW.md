@@ -51,7 +51,7 @@ Landscape phones, split-screen browsers, virtual keyboards, third-party fixed-wi
 
 Mobile View keeps the official Harness root and AppFrame mounted. It contributes controls through overlay, conversation, theme, session, locale, button, and input contracts wherever Harness exposes them. The stock desktop presentation is unchanged when the media query does not match.
 
-Harness `0.1.2-rc.1` does not expose a complete public responsive shell, drawer recipe, spacing/radius scale, or every required glyph. The plugin therefore owns mobile geometry and a small number of scoped presentation adapters for stock brand, workspace, session-action, and feedback elements. Those hooks are documented in [Architecture and compatibility boundaries](ARCHITECTURE.md) and must be retested for each supported Harness version.
+Harness `0.1.5-rc.1` does not expose a complete public responsive shell, drawer recipe, spacing/radius scale, or every required glyph. The plugin therefore owns mobile geometry and a small number of scoped presentation adapters for stock brand, workspace, session-action, and feedback elements. Those hooks are documented in [Architecture and compatibility boundaries](ARCHITECTURE.md) and must be retested for each supported Harness version.
 
 ## Security
 

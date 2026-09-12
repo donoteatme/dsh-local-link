@@ -9,7 +9,7 @@ Use the same [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness)
 
 Open `Local access`, scan the QR code, and the paired browser arrives at the desktop's currently selected Harness session with the same live conversation, permissions, workspaces, and plugin surfaces.
 
-The `1.1.0` line supports DeepSeek Harness `0.1.2-rc.1` and keeps the stock Web client usable on narrow touch screens. It reorganizes the existing Harness interface into responsive drawers, compact session controls, and touch-friendly actions while keeping the same client, session, plugin slots, permissions, and live agent stream.
+The `1.1.x` line supports DeepSeek Harness `0.1.5-rc.1` and keeps the stock Web client usable on narrow touch screens. It reorganizes the existing Harness interface into responsive drawers, compact session controls, and touch-friendly actions while keeping the same client, session, plugin slots, permissions, and live agent stream.
 
 > **Security boundary:** the gateway uses plain HTTP and is intended only for a trusted private network. Do not expose its port to the internet or use it on public Wi-Fi.
 
@@ -73,14 +73,16 @@ Compatibility is checked against exact DeepSeek Harness versions—not inferred 
 
 | DeepSeek Harness | Local Link status |
 | --- | --- |
-| `0.1.2-rc.1` | **Supported release** |
+| `0.1.5-rc.2` | **Verified next** |
+| `0.1.5-rc.1` | **Supported release** |
+| `0.1.2-rc.1` | **Verified** |
 | `0.1.1-rc.2` | **Verified** |
 | `0.1.1-rc.1` | **Verified** |
 | `0.1.0-rc.8` | **Verified** |
 
-All four rows were checked with the packed `1.1.0` release. The historical RC gate covers a clean Web profile, the real client, Local Access, pairing, authenticated HTTP and WebSocket traffic, revoke, and responsive navigation at `390 × 844`. `0.1.2-rc.1` remains the development baseline and receives the complete current-runtime gate.
+All six rows were checked with the packed `1.1.1` source. Every exact version passed isolated profile composition, plugin peer checks, pairing, authenticated HTTP and WebSocket traffic, immediate socket closure on revoke, and rejection of the revoked device. The `0.1.5` rows also received the current real-client responsive check at `390 × 844`; historical responsive evidence remains recorded separately. `0.1.5-rc.1` is the development baseline. `0.1.5-rc.2` is an exact `next` check, not a promise about future movement of that tag.
 
-Versions older than `0.1.0-rc.8` are untested and unsupported. New Harness versions are checked independently. See [Compatibility](docs/COMPATIBILITY.md) for the evidence and remaining real-device boundary.
+Only the exact versions listed above carry a compatibility claim. Alpha builds—including the removed `0.1.2-alpha.1` row—versions older than `0.1.0-rc.8`, and whatever package a moving `next` tag points to later are unsupported until checked independently. See [Compatibility](docs/COMPATIBILITY.md) for the evidence and remaining real-device boundary.
 
 ## Use
 
@@ -99,7 +101,7 @@ Phone and tablet browsers automatically receive Mobile View when the viewport is
 
 The stock Harness Web interface is difficult to operate on a phone: persistent desktop navigation consumes the viewport, session controls compete with the conversation title, several actions depend on hover or long press, and subagent information is too dense for a narrow screen. Mobile View makes that existing interface usable without introducing a second client or duplicating Harness business logic.
 
-| Stock narrow-screen behavior | Mobile View in `1.1.0` |
+| Stock narrow-screen behavior | Mobile View in `1.1.x` |
 | --- | --- |
 | Desktop navigation competes with the conversation | Workspace and session navigation opens as a dismissible left drawer |
 | Session metadata crowds the header | Context, model, access, preset, activity, and export move into a compact right drawer |
@@ -181,7 +183,7 @@ The gateway does not create a second Harness session. During first connection it
 
 Authorization uses a 256-bit random cookie credential. Only its SHA-256 hash is stored. The editable name and detected device/browser text never grant access.
 
-The LAN authority is declared through Harness's official connection `trustedHosts` contract. This enables authenticated session API and WebSocket traffic without pretending that the phone is loopback. Because Harness `0.1.2-rc.1` authenticates the transport as a whole, Local Link itself rejects the configuration, credential, native Host-action, and agent-preset-authoring RPCs that earlier supported Harness builds kept loopback-only.
+The LAN authority is declared through Harness's official connection `trustedHosts` contract. This enables authenticated session API and WebSocket traffic without pretending that the phone is loopback. Harness `0.1.2-rc.1` and the verified `0.1.5` builds authenticate the transport as a whole, so Local Link itself rejects the configuration, credential, native Host-action, and agent-preset-authoring RPCs that earlier supported Harness builds kept loopback-only.
 
 ## Configuration
 
@@ -261,7 +263,7 @@ Project documentation:
 - The shortcut that opens a specific Settings section uses a small semantic compatibility bridge because Harness does not expose a general settings-navigation service.
 - Harness's footer-action container needs a compatibility layout rule when the full-width Cordis action is present.
 - Mobile View targets viewports from 360 CSS pixels wide, but third-party fixed-width views, virtual keyboards, orientation changes, split-screen browsers, and operating-system text scaling still require real-device acceptance.
-- Plugin-owned buttons and text inputs use Harness `Button` and `Input` primitives and their semantic variants. Harness `0.1.2-rc.1` still has no complete public responsive-shell, spacing, or radius contract, so mobile geometry, responsive compositions, and the few missing primitive icons remain documented design-system compatibility risks.
+- Plugin-owned buttons and text inputs use Harness `Button` and `Input` primitives and their semantic variants. Harness `0.1.5-rc.1` still has no complete public responsive-shell, spacing, or radius contract, so mobile geometry, responsive compositions, and the few missing primitive icons remain documented design-system compatibility risks.
 
 ## Development disclosure
 

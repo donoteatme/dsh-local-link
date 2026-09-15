@@ -192,19 +192,30 @@ describe('mobile root composition', () => {
     const guard = new MobileComposerAutofocusGuard('session-a')
     const input = new EventTarget()
 
-    guard.selectionChanged('session-b', 1_000)
+    expect(guard.selectionChanged('session-b')).toBe(true)
     expect(guard.shouldBlur(input, 1_100)).toBe(true)
-    expect(guard.shouldBlur(input, 1_101)).toBe(false)
+    expect(guard.shouldBlur(input, 1_101)).toBe(true)
 
-    guard.selectionChanged('session-c', 2_000)
+    expect(guard.selectionChanged('session-c')).toBe(true)
     guard.pointerDown(input, 2_050)
     expect(guard.shouldBlur(input, 2_060)).toBe(false)
+    expect(guard.shouldBlur(input, 2_061)).toBe(false)
   })
 
-  it('expires a pending autofocus suppression instead of affecting later input', () => {
+  it('keeps late and repeated autofocus suppressed until the user taps the composer', () => {
     const guard = new MobileComposerAutofocusGuard('session-a')
-    guard.selectionChanged('session-b', 1_000)
-    expect(guard.shouldBlur(new EventTarget(), 2_201)).toBe(false)
+    const input = new EventTarget()
+    guard.selectionChanged('session-b')
+    expect(guard.shouldBlur(input, 10_000)).toBe(true)
+    expect(guard.shouldBlur(input, 20_000)).toBe(true)
+    guard.pointerDown(input, 20_100)
+    expect(guard.shouldBlur(input, 20_101)).toBe(false)
+  })
+
+  it('does not re-arm autofocus suppression when the selected session is unchanged', () => {
+    const guard = new MobileComposerAutofocusGuard('session-a')
+    expect(guard.selectionChanged('session-a')).toBe(false)
+    expect(guard.shouldBlur(new EventTarget(), 1_000)).toBe(false)
   })
 
   it('keeps the drawer open for native session actions and closes it for row selection', () => {

@@ -35,7 +35,7 @@ interface ThemeController {
 
 export class MobileComposerAutofocusGuard {
   private selected: string | undefined
-  private suppressUntil = 0
+  private suppress = false
   private pointerTarget: EventTarget | null = null
   private pointerAt = 0
 
@@ -43,10 +43,12 @@ export class MobileComposerAutofocusGuard {
     this.selected = selected
   }
 
-  selectionChanged(selected: string | undefined, now: number): void {
-    if (selected === this.selected) return
+  selectionChanged(selected: string | undefined): boolean {
+    if (selected === this.selected) return false
     this.selected = selected
-    this.suppressUntil = now + 1_200
+    this.suppress = true
+    this.pointerTarget = null
+    return true
   }
 
   pointerDown(target: EventTarget, now: number): void {
@@ -58,12 +60,10 @@ export class MobileComposerAutofocusGuard {
     const intentional = this.pointerTarget === target && now - this.pointerAt <= 700
     this.pointerTarget = null
     if (intentional) {
-      this.suppressUntil = 0
+      this.suppress = false
       return false
     }
-    if (now > this.suppressUntil) return false
-    this.suppressUntil = 0
-    return true
+    return this.suppress
   }
 }
 
@@ -71,13 +71,16 @@ function installMobileComposerAutofocusGuard(ctx: ClientContext): () => void {
   const guard = new MobileComposerAutofocusGuard(ctx.sessions.list.getSnapshot().current)
   const composerInput = (target: EventTarget | null): HTMLElement | null => {
     if (!(target instanceof HTMLElement)) return null
-    if (!target.matches('textarea,[contenteditable="true"]')) return null
-    const mobileSurface = target.closest('.dllm-main') !== null
+    const input = target.closest<HTMLElement>('textarea,[contenteditable="true"]')
+    if (input === null) return null
+    const mobileSurface = input.closest('.dllm-main') !== null
       || document.body.hasAttribute('data-dsh-local-link-mobile')
-    return mobileSurface ? target : null
+    return mobileSurface ? input : null
   }
   const offSessions = ctx.sessions.list.subscribe(() => {
-    guard.selectionChanged(ctx.sessions.list.getSnapshot().current, Date.now())
+    if (guard.selectionChanged(ctx.sessions.list.getSnapshot().current)) {
+      composerInput(document.activeElement)?.blur()
+    }
   })
   const onPointerDown = (event: PointerEvent): void => {
     const target = composerInput(event.target)

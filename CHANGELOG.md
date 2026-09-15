@@ -2,6 +2,17 @@
 
 All notable changes to this project are documented here.
 
+## 1.1.2 — 2026-09-15
+
+### Fixed
+
+- Prevented the mobile composer from retaining or regaining automatic focus after switching sessions, so chat navigation no longer opens the virtual keyboard. An explicit tap on the composer still focuses it normally.
+
+### Validated
+
+- Passed TypeScript checking, all 99 automated tests across 16 files, and the production build.
+- Activated the rebuilt plugin in the current DeepSeek Harness installation through Process Launcher without restarting the local model server.
+
 ## 1.1.1 — 2026-09-12
 
 ### Changed

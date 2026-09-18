@@ -184,10 +184,13 @@ body[data-dsh-local-link-mobile] #root>[data-slot="root"]>div:has(>[data-shell-o
 body[data-dsh-local-link-mobile] [data-slot="sidebar"] button[class*="_brand"]{flex:0 0 auto!important;inline-size:max-content!important;width:max-content!important;min-width:0!important;max-width:calc(100% - 72px)!important;margin-right:auto!important}
 body[data-dsh-local-link-mobile] #root>[data-slot="root"]>div[data-sidebar-collapsed]:has(>[data-shell-overlay])>:first-child{transform:var(--dllm-side-drawer-closed-transform);pointer-events:none}
 body[data-dsh-local-link-mobile] #root>[data-slot="root"]>div:has(>[data-shell-overlay])>:nth-child(2){grid-column:1;grid-row:1;min-width:0}
-body[data-dsh-local-link-mobile] #root>[data-slot="root"]>div:has(>[data-shell-overlay])>:nth-child(3){display:none}
+body[data-dsh-local-link-mobile] #root>[data-slot="root"]>div:has(>[data-shell-overlay])>[data-rightbar-col]{position:absolute!important;inset:0 0 auto auto!important;display:block!important;width:0!important;height:0!important;overflow:visible!important}
+body[data-dsh-local-link-mobile] [data-rightbar-col] [data-sidebar-right-panel]{position:fixed!important;inset:0!important;z-index:100!important;width:100%!important;border:0!important}
+body[data-dsh-local-link-mobile] #root>[data-slot="root"]>div:has(>[data-shell-overlay])>[data-side]{display:none!important}
 body[data-dsh-local-link-mobile] #root>[data-slot="root"]>div:has(>[data-shell-overlay])>[data-shell-overlay]{z-index:90}
 .dllm-stock-controls{position:absolute;inset:0;pointer-events:none}
-.dllm-stock-menu{position:absolute;top:max(10px,env(safe-area-inset-top));left:max(10px,env(safe-area-inset-left));display:grid;width:44px;height:44px;padding:0;place-items:center;border:var(--dsh-local-link-border-width) solid var(--dsw-alias-border-l2,rgb(148 163 184 / 30%));border-radius:12px;color:inherit;background:var(--dsw-alias-bg-layer-1,rgb(255 255 255 / 92%));box-shadow:var(--dsw-shadow-lv3,0 8px 24px rgb(15 23 42 / 14%));pointer-events:auto;transition:opacity 120ms ease,transform 120ms ease}
+.dllm-stock-menu{position:absolute;top:max(10px,env(safe-area-inset-top));left:max(8px,env(safe-area-inset-left));display:grid;width:36px;height:36px;padding:0;place-items:center;border:0;border-radius:8px;color:inherit;background:transparent;box-shadow:none;pointer-events:auto;transition:opacity 120ms ease,transform 120ms ease,background-color 120ms ease}
+.dllm-stock-menu:hover{background:var(--dsw-alias-interactive-bg-hover,rgb(127 127 127 / 14%))}
 .dllm-stock-menu svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round}
 body[data-dsh-local-link-mobile] #root>[data-slot="root"]>div:not([data-sidebar-collapsed]):has(>[data-shell-overlay]) .dllm-stock-menu{opacity:0;transform:scale(.9);pointer-events:none}
 .dllm-stock-scrim{position:absolute;inset:0 0 0 var(--dllm-side-drawer-width);width:auto;height:auto;min-height:0;padding:0;border:0;border-radius:0;background:var(--dsw-alias-bg-mask-1,rgb(15 23 42 / 40%))!important;pointer-events:auto}
@@ -200,8 +203,14 @@ body[data-dsh-local-link-mobile] [role="treeitem"][aria-selected="true"]>span:ha
 body[data-dsh-local-link-mobile] [role="treeitem"][aria-selected="true"]>span:has(button[aria-label]) button{width:28px!important;height:28px!important}
 body[data-dsh-local-link-mobile] [role="tree"]>div:has([role="treeitem"][aria-selected="true"]) [role="treeitem"][aria-expanded]>span:last-child{display:inline-flex!important}
 body[data-dsh-local-link-mobile] [role="treeitem"][aria-expanded]:has(>span[class*="_folderActive"])>span:last-child{display:inline-flex!important}
-body[data-dsh-local-link-mobile] header{min-width:0;padding-left:max(58px,env(safe-area-inset-left));padding-right:max(10px,env(safe-area-inset-right))}
+body[data-dsh-local-link-mobile] header{min-width:0;padding-left:max(48px,env(safe-area-inset-left));padding-right:max(8px,env(safe-area-inset-right))}
+body[data-dsh-local-link-mobile] header [data-conversation-header-corner]{flex:0 0 auto!important;min-width:max-content;margin-right:0!important}
+body[data-dsh-local-link-mobile] header .dllm-session-info-trigger{display:inline-flex!important;flex:0 0 28px!important;width:28px!important;min-width:28px!important;height:28px!important;padding:0!important}
+body[data-dsh-local-link-mobile] header div:has(>button[data-state]):has(>button[aria-haspopup="menu"]){display:none!important}
 body[data-dsh-local-link-mobile] textarea,body[data-dsh-local-link-mobile] input{font-size:max(16px,1em)}
+body[data-dsh-local-link-mobile] [data-composer-card] [data-input-scroll]{min-height:52px}
+body[data-dsh-local-link-mobile] [data-composer-placeholder]{white-space:normal!important;text-overflow:clip!important;overflow-wrap:anywhere;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-clamp:2;overflow:hidden}
+@media(max-width:480px){body[data-dsh-local-link-mobile] [data-composer-card]>div:last-child{flex-wrap:nowrap!important;gap:8px!important}body[data-dsh-local-link-mobile] [data-composer-card]>div:last-child>div:first-child{flex:1 1 auto;gap:8px!important}body[data-dsh-local-link-mobile] [data-composer-card]>div:last-child>div:last-child{box-sizing:border-box;width:auto;flex:0 0 auto;justify-content:flex-end;gap:6px!important}body[data-dsh-local-link-mobile] [data-composer-card]>div:last-child>div:last-child button[aria-haspopup="menu"]{width:28px;max-width:28px;padding:0;justify-content:center}body[data-dsh-local-link-mobile] [data-composer-card]>div:last-child>div:last-child button[aria-haspopup="menu"]>span{display:none!important}body[data-dsh-local-link-mobile] [data-composer-card]>div:last-child>div:last-child button[aria-haspopup="menu"]>svg:first-child{display:block!important}}
 body[data-dsh-local-link-mobile] [role=tablist]{display:flex;max-width:100%;overflow-x:auto;overscroll-behavior-inline:contain;scrollbar-width:none}
 body[data-dsh-local-link-mobile] [role=tablist]::-webkit-scrollbar{display:none}body[data-dsh-local-link-mobile] [role=tab]{flex:0 0 auto;min-height:40px;touch-action:manipulation}
 body[data-dsh-local-link-mobile] header nav:has(.dllm-lineage-title){gap:0!important;overflow-x:auto;overscroll-behavior-inline:contain;scrollbar-width:none}

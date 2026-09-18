@@ -131,9 +131,38 @@ describe('mobile root composition', () => {
     expect(MOBILE_STOCK_LAYOUT_STYLES).toContain('--dllm-side-drawer-closed-transform:translateX(')
     expect(MOBILE_STOCK_LAYOUT_STYLES).toContain('grid-template-columns:minmax(0,1fr)!important')
     expect(MOBILE_STOCK_LAYOUT_STYLES).toContain('transform:var(--dllm-side-drawer-closed-transform)')
-    expect(MOBILE_STOCK_LAYOUT_STYLES).toContain('padding-left:max(58px')
-    expect(MOBILE_STOCK_LAYOUT_STYLES).toContain('padding-right:max(10px,env(safe-area-inset-right))')
+    expect(MOBILE_STOCK_LAYOUT_STYLES).toContain('padding-left:max(48px')
+    expect(MOBILE_STOCK_LAYOUT_STYLES).toContain('padding-right:max(8px,env(safe-area-inset-right))')
+    expect(MOBILE_STOCK_LAYOUT_STYLES).toContain('[data-conversation-header-corner]{flex:0 0 auto!important;min-width:max-content;margin-right:0!important}')
+    expect(MOBILE_STOCK_LAYOUT_STYLES).toContain('.dllm-session-info-trigger{display:inline-flex!important;flex:0 0 28px!important;width:28px!important;min-width:28px!important')
     expect(MOBILE_STOCK_LAYOUT_STYLES).not.toContain('width:56px')
+  })
+
+  it('uses compact unframed header controls and removes open-in-app on mobile', () => {
+    expect(MOBILE_STOCK_LAYOUT_STYLES).toContain('.dllm-stock-menu{')
+    expect(MOBILE_STOCK_LAYOUT_STYLES).toContain('width:36px;height:36px')
+    expect(MOBILE_STOCK_LAYOUT_STYLES).toContain('border:0;border-radius:8px;color:inherit;background:transparent;box-shadow:none')
+    expect(MOBILE_STOCK_LAYOUT_STYLES).toContain('header div:has(>button[data-state]):has(>button[aria-haspopup="menu"]){display:none!important}')
+    expect(MOBILE_STOCK_LAYOUT_STYLES).not.toContain('Choose an app to open in')
+  })
+
+  it('wraps the composer placeholder and collapses the model picker before it overflows', () => {
+    expect(MOBILE_STOCK_LAYOUT_STYLES).toContain('[data-composer-card] [data-input-scroll]{min-height:52px}')
+    expect(MOBILE_STOCK_LAYOUT_STYLES).toContain('[data-composer-placeholder]{white-space:normal!important')
+    expect(MOBILE_STOCK_LAYOUT_STYLES).toContain('-webkit-line-clamp:2')
+    expect(MOBILE_STOCK_LAYOUT_STYLES).toContain('@media(max-width:480px)')
+    expect(MOBILE_STOCK_LAYOUT_STYLES).toContain('[data-composer-card]>div:last-child{flex-wrap:nowrap!important')
+    expect(MOBILE_STOCK_LAYOUT_STYLES).toContain('[data-composer-card]>div:last-child>div:last-child{box-sizing:border-box;width:auto;flex:0 0 auto')
+    expect(MOBILE_STOCK_LAYOUT_STYLES).not.toContain('width:100%;flex:1 1 100%')
+    expect(MOBILE_STOCK_LAYOUT_STYLES).toContain('button[aria-haspopup="menu"]>span{display:none!important}')
+    expect(MOBILE_STOCK_LAYOUT_STYLES).toContain('button[aria-haspopup="menu"]>svg:first-child{display:block!important}')
+  })
+
+  it('keeps the 0.1.5 right sidebar available as a fullscreen mobile surface', () => {
+    expect(MOBILE_STOCK_LAYOUT_STYLES).toContain('>[data-rightbar-col]{position:absolute!important')
+    expect(MOBILE_STOCK_LAYOUT_STYLES).toContain('[data-rightbar-col] [data-sidebar-right-panel]{position:fixed!important;inset:0!important')
+    expect(MOBILE_STOCK_LAYOUT_STYLES).toContain('>[data-side]{display:none!important}')
+    expect(MOBILE_STOCK_LAYOUT_STYLES).not.toContain('>:nth-child(3){display:none}')
   })
 
   it('uses the shared Local Link hairline for plugin-owned mobile borders', () => {

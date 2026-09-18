@@ -79,7 +79,8 @@ describe('mobile session information', () => {
   })
 
   it('renders a right-side mobile drawer rather than taking over Harness details', () => {
-    expect(MOBILE_SESSION_INFO_STYLES).toContain('width:44px;height:44px')
+    expect(MOBILE_SESSION_INFO_STYLES).toContain('width:36px;height:36px')
+    expect(MOBILE_SESSION_INFO_STYLES).toContain('border:0;border-radius:8px;color:inherit;background:transparent;box-shadow:none')
     expect(MOBILE_SESSION_INFO_STYLES).toContain('.dllm-session-info-glyph')
     expect(MOBILE_SESSION_INFO_STYLES).toContain('button>svg{width:16px;height:16px}')
     expect(MOBILE_SESSION_INFO_STYLES).not.toContain('button>svg{width:16px;height:16px;fill:none')

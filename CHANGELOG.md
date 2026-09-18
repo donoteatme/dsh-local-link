@@ -2,6 +2,37 @@
 
 All notable changes to this project are documented here.
 
+## 1.2.0 — 2026-09-18
+
+`1.2.0` moves the development baseline to DeepSeek Harness `0.1.5-rc.2` and
+finishes the narrow-screen presentation without changing Local Link's trusted
+private-LAN scope, pairing model, or use of the stock Harness client.
+
+### Added
+
+- Added a complete Simplified Chinese README with an English/Chinese language switch; both README files ship in the npm package.
+- Added real dark-theme browser screenshots for Navigation, Current session, Subagents, and Conversation, captured from an isolated `430 × 932` Harness profile containing synthetic data only.
+- Added regression coverage for compact header actions, the narrow composer, hidden remote app-launch action, and the Harness right sidebar on mobile.
+
+### Changed
+
+- Moved the supported DeepSeek Harness baseline and all direct development contracts to the exact `0.1.5-rc.2` release while retaining the explicitly verified historical RC peer range.
+- Reworked the mobile header controls into compact, unframed actions with balanced safe-area spacing and a non-shrinking Current session information action.
+- Kept composer actions on one row at phone widths, collapsed the model selector label before overflow, and allowed the placeholder to wrap to two lines.
+- Projected the Harness `rightbar` as a full-screen mobile surface instead of hiding it.
+
+### Fixed
+
+- Kept the Current session information action visible at very narrow widths, including a `320 × 568` browser-emulated check.
+- Removed the misleading remote `Open in app` action from Mobile View.
+- Preserved native message actions and the end of the conversation while keeping the composer fully usable on narrow screens.
+
+### Validated
+
+- Passed TypeScript checking, all 102 automated tests across 16 files, the production build, the production dependency audit with no known vulnerabilities, package dry-run, and `npm publish --dry-run`.
+- Booted an isolated `0.1.5-rc.2` Harness profile with the local plugin and synthetic parent/child sessions, then exercised the real Navigation, Current session, Subagents, and Conversation surfaces at `430 × 932` and the header/composer at `320 × 568`.
+- Retained the previously recorded installed-runtime compatibility evidence for `0.1.5-rc.1`, `0.1.2-rc.1`, `0.1.1-rc.2`, `0.1.1-rc.1`, and `0.1.0-rc.8`; physical-phone acceptance remains a separate check.
+
 ## 1.1.2 — 2026-09-15
 
 ### Fixed

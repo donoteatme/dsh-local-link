@@ -1,5 +1,7 @@
 # dsh-local-link
 
+**English** | [中文](README.zh.md)
+
 [![CI](https://github.com/donoteatme/dsh-local-link/actions/workflows/ci.yml/badge.svg)](https://github.com/donoteatme/dsh-local-link/actions/workflows/ci.yml)
 [![npm](https://img.shields.io/npm/v/dsh-local-link.svg)](https://www.npmjs.com/package/dsh-local-link)
 [![Awesome DSH Plugin](https://awesome-dsh-plugin.com/badge.svg)](https://awesome-dsh-plugin.com)
@@ -9,7 +11,7 @@ Use the same [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness)
 
 Open `Local access`, scan the QR code, and the paired browser arrives at the desktop's currently selected Harness session with the same live conversation, permissions, workspaces, and plugin surfaces.
 
-The `1.1.x` line supports DeepSeek Harness `0.1.5-rc.1` and keeps the stock Web client usable on narrow touch screens. It reorganizes the existing Harness interface into responsive drawers, compact session controls, and touch-friendly actions while keeping the same client, session, plugin slots, permissions, and live agent stream.
+The `1.2.x` line supports DeepSeek Harness `0.1.5-rc.2` and keeps the stock Web client usable on narrow touch screens. It reorganizes the existing Harness interface into responsive drawers, compact session controls, and touch-friendly actions while keeping the same client, session, plugin slots, permissions, and live agent stream.
 
 > **Security boundary:** the gateway uses plain HTTP and is intended only for a trusted private network. Do not expose its port to the internet or use it on public Wi-Fi.
 
@@ -73,14 +75,14 @@ Compatibility is checked against exact DeepSeek Harness versions—not inferred 
 
 | DeepSeek Harness | Local Link status |
 | --- | --- |
-| `0.1.5-rc.2` | **Verified next** |
-| `0.1.5-rc.1` | **Supported release** |
+| `0.1.5-rc.2` | **Supported release** |
+| `0.1.5-rc.1` | **Verified** |
 | `0.1.2-rc.1` | **Verified** |
 | `0.1.1-rc.2` | **Verified** |
 | `0.1.1-rc.1` | **Verified** |
 | `0.1.0-rc.8` | **Verified** |
 
-All six rows were checked with the packed `1.1.1` source. Every exact version passed isolated profile composition, plugin peer checks, pairing, authenticated HTTP and WebSocket traffic, immediate socket closure on revoke, and rejection of the revoked device. The `0.1.5` rows also received the current real-client responsive check at `390 × 844`; historical responsive evidence remains recorded separately. `0.1.5-rc.1` is the development baseline. `0.1.5-rc.2` is an exact `next` check, not a promise about future movement of that tag.
+All six rows passed the installed-runtime gateway and revoke gate with packed `1.1.1` source. For `1.2.0`, the current `0.1.5-rc.2` release was additionally rebuilt against the exact package contracts and exercised in the real browser client at `430 × 932` and `320 × 568`. Historical RC evidence remains recorded separately and the moving `next` tag itself is never a compatibility promise.
 
 Only the exact versions listed above carry a compatibility claim. Alpha builds—including the removed `0.1.2-alpha.1` row—versions older than `0.1.0-rc.8`, and whatever package a moving `next` tag points to later are unsupported until checked independently. See [Compatibility](docs/COMPATIBILITY.md) for the evidence and remaining real-device boundary.
 
@@ -101,7 +103,7 @@ Phone and tablet browsers automatically receive Mobile View when the viewport is
 
 The stock Harness Web interface is difficult to operate on a phone: persistent desktop navigation consumes the viewport, session controls compete with the conversation title, several actions depend on hover or long press, and subagent information is too dense for a narrow screen. Mobile View makes that existing interface usable without introducing a second client or duplicating Harness business logic.
 
-| Stock narrow-screen behavior | Mobile View in `1.1.x` |
+| Stock narrow-screen behavior | Mobile View in `1.2.x` |
 | --- | --- |
 | Desktop navigation competes with the conversation | Workspace and session navigation opens as a dismissible left drawer |
 | Session metadata crowds the header | Context, model, access, preset, activity, and export move into a compact right drawer |
@@ -123,11 +125,11 @@ The implementation changes presentation, not Harness ownership or behavior:
 - plugin-owned modal drawers contain keyboard focus and return it to the invoking control when closed;
 - existing workspaces remain available, while the misleading remote `Add workspace` directory picker is omitted.
 
-These previews are captured from the running Harness client at a `430 × 932` viewport with non-persistent sample content; the thin rounded frame is presentation-only.
+These dark-theme previews are captured from a real Harness browser session at a `430 × 932` emulated viewport. The isolated screenshot profile uses synthetic product-demo data only; no local workspace, chat, path, prompt, model, or usage data appears in them.
 
 | Navigation | Current session | Subagents | Conversation |
 | :---: | :---: | :---: | :---: |
-| <img src="docs/images/mobile-navigation.png" width="210" alt="Live Mobile View left navigation drawer with native workspace and session actions"> | <img src="docs/images/mobile-session-info.png" width="210" alt="Live Mobile View Current session drawer with context, model, workspace access, preset, activity, and session log"> | <img src="docs/images/mobile-subagents.png" width="210" alt="Live Mobile View nested subagent sheet with activity, tokens, and duration"> | <img src="docs/images/mobile-chat.png" width="210" alt="Live Mobile View Harness conversation, composer, and visible total and active subagent counts"> |
+| <img src="docs/images/mobile-navigation.png" width="210" alt="Dark Mobile View navigation drawer with a synthetic workspace and session"> | <img src="docs/images/mobile-session-info.png" width="210" alt="Dark Mobile View Current session drawer with synthetic model, workspace access, statistics, and session log data"> | <img src="docs/images/mobile-subagents.png" width="210" alt="Dark Mobile View subagent sheet with two synthetic child agents"> | <img src="docs/images/mobile-chat.png" width="210" alt="Dark Mobile View Harness conversation with native message actions and one-line composer controls"> |
 
 ### Permissions
 
@@ -263,7 +265,7 @@ Project documentation:
 - The shortcut that opens a specific Settings section uses a small semantic compatibility bridge because Harness does not expose a general settings-navigation service.
 - Harness's footer-action container needs a compatibility layout rule when the full-width Cordis action is present.
 - Mobile View targets viewports from 360 CSS pixels wide, but third-party fixed-width views, virtual keyboards, orientation changes, split-screen browsers, and operating-system text scaling still require real-device acceptance.
-- Plugin-owned buttons and text inputs use Harness `Button` and `Input` primitives and their semantic variants. Harness `0.1.5-rc.1` still has no complete public responsive-shell, spacing, or radius contract, so mobile geometry, responsive compositions, and the few missing primitive icons remain documented design-system compatibility risks.
+- Plugin-owned buttons and text inputs use Harness `Button` and `Input` primitives and their semantic variants. Harness `0.1.5-rc.2` still has no complete public responsive-shell, spacing, or radius contract, so mobile geometry, responsive compositions, and the few missing primitive icons remain documented design-system compatibility risks.
 
 ## Development disclosure
 

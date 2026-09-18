@@ -423,7 +423,7 @@ function MobileSessionInfoDrawer({ controller, downloads, t, useSessions }: Draw
 }
 
 export const MOBILE_SESSION_INFO_STYLES = `
-.dllm-session-info-trigger{display:grid;width:44px;height:44px;margin:0;padding:0;place-items:center;border:var(--dsh-local-link-border-width) solid var(--dsw-alias-border-l2,rgb(148 163 184 / 30%));border-radius:12px;color:inherit;background:var(--dsw-alias-bg-layer-1,rgb(255 255 255 / 92%));box-shadow:var(--dsw-shadow-lv3,0 8px 24px rgb(15 23 42 / 14%));cursor:pointer}
+.dllm-session-info-trigger{display:grid;width:36px;height:36px;margin:0;padding:0;place-items:center;border:0;border-radius:8px;color:inherit;background:transparent;box-shadow:none;cursor:pointer}
 .dllm-session-info-trigger:hover{background:var(--dsw-alias-interactive-bg-hover,rgb(127 127 127 / 18%))}
 .dllm-session-info-glyph{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .dllm-session-info-layer{position:fixed;z-index:120;inset:0;display:flex;justify-content:flex-end;pointer-events:auto}.dllm-session-info-backdrop{position:absolute;inset:0;width:auto;height:auto;min-height:0;padding:0;border:0;border-radius:0;background:var(--dsw-alias-bg-mask-1,rgb(15 23 42 / 46%))!important}

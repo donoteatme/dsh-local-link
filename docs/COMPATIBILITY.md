@@ -5,13 +5,14 @@ and Settings contracts. Each supported version is therefore checked directly.
 
 ## Compatibility matrix
 
-Last checked on 2026-09-12 with Node.js 22 and Windows using packed
-`dsh-local-link@1.1.1` source for every row. Versions are newest first.
+Last checked on 2026-09-18 with Node.js 22 and Windows. The current release row
+uses the `dsh-local-link@1.2.0` candidate; historical rows retain their packed
+`1.1.1` installed-runtime evidence. Versions are newest first.
 
 | DeepSeek Harness | Status | Local Link source | Last checked |
 | --- | --- | --- | --- |
-| `0.1.5-rc.2` | **Verified next** | `1.1.1` | 2026-09-12 |
-| `0.1.5-rc.1` | **Supported release** | `1.1.1` | 2026-09-12 |
+| `0.1.5-rc.2` | **Supported release** | `1.2.0` | 2026-09-18 |
+| `0.1.5-rc.1` | **Verified** | `1.1.1` | 2026-09-12 |
 | `0.1.2-rc.1` | **Verified** | `1.1.1` | 2026-09-12 |
 | `0.1.1-rc.2` | **Verified** | `1.1.1` | 2026-09-12 |
 | `0.1.1-rc.1` | **Verified** | `1.1.1` | 2026-09-12 |
@@ -26,14 +27,12 @@ unsupported until they pass a new check.
 
 - **Supported release** is the current development target and receives the
   complete repository and installed-runtime gate.
-- **Verified next** means the exact package version currently published under
-  `next` passed the compatibility gate; the moving tag itself is not supported.
-- **Verified** means the current packed Local Link artifact passed the historical
-  RC gate on that exact version.
+- **Verified** means the recorded packed Local Link artifact passed the
+  historical RC gate on that exact version.
 - **Untested** means no compatibility claim is made.
 
 Every newer Harness version still requires an independent check; support for
-`0.1.5-rc.1` does not imply support for a moving `next` tag or later alpha.
+`0.1.5-rc.2` does not imply support for a moving `next` tag or later alpha.
 
 ## Verification policy
 
@@ -60,7 +59,12 @@ automated tests, production build/package verification, desktop Local Access
 rendering, and the responsive shell at `390 × 844` without client exceptions.
 The historical versions retain their earlier real-client responsive evidence;
 the `1.1.1` patch changes package compatibility contracts and documentation, not
-the shipped client or gateway implementation.
+the shipped client or gateway implementation. The `1.2.0` candidate was then
+rebuilt against the exact `0.1.5-rc.2` contracts and booted in an isolated Web
+profile with synthetic parent and subagent sessions. Its real browser client
+passed Navigation, Current session, Subagents, and Conversation checks at
+`430 × 932`, plus the non-shrinking information action and one-row composer at
+`320 × 568`.
 
 Historical RC runs used empty profiles, so they did not create provider-backed
 conversations. Physical-phone portrait and landscape acceptance also remains a

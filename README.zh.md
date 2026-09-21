@@ -4,7 +4,8 @@
 
 [![CI](https://github.com/donoteatme/dsh-local-link/actions/workflows/ci.yml/badge.svg)](https://github.com/donoteatme/dsh-local-link/actions/workflows/ci.yml)
 [![npm](https://img.shields.io/npm/v/dsh-local-link.svg)](https://www.npmjs.com/package/dsh-local-link)
-[![Awesome DSH Plugin](https://awesome-dsh-plugin.com/badge.svg)](https://awesome-dsh-plugin.com)
+[![npm downloads](https://img.shields.io/npm/dm/dsh-local-link.svg)](https://www.npmjs.com/package/dsh-local-link)
+[![Awesome DSH Plugin](https://awesome-dsh-plugin.com/badge.svg)](https://awesome-dsh-plugin.com/p/donoteatme/dsh-local-link/)
 [![license](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 在可信私有网络中，通过手机、平板或另一台电脑使用同一个 [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) Web 会话。`dsh-local-link` 为原生 DSH 客户端增加一次性二维码配对和响应式移动视图；它不使用托管中继、云账户、原生应用、替代聊天界面或第二套工作区选择器。

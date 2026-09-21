@@ -4,7 +4,8 @@
 
 [![CI](https://github.com/donoteatme/dsh-local-link/actions/workflows/ci.yml/badge.svg)](https://github.com/donoteatme/dsh-local-link/actions/workflows/ci.yml)
 [![npm](https://img.shields.io/npm/v/dsh-local-link.svg)](https://www.npmjs.com/package/dsh-local-link)
-[![Awesome DSH Plugin](https://awesome-dsh-plugin.com/badge.svg)](https://awesome-dsh-plugin.com)
+[![npm downloads](https://img.shields.io/npm/dm/dsh-local-link.svg)](https://www.npmjs.com/package/dsh-local-link)
+[![Awesome DSH Plugin](https://awesome-dsh-plugin.com/badge.svg)](https://awesome-dsh-plugin.com/p/donoteatme/dsh-local-link/)
 [![license](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 Use the same [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) Web session from a phone, tablet, or another computer on your trusted private network. `dsh-local-link` adds one-time QR pairing and a responsive Mobile View to the stock DSH client—without a hosted relay, cloud account, native app, replacement chat UI, or second workspace picker.

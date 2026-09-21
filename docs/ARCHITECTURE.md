@@ -175,7 +175,7 @@ No service discovery, certificate generator, tunnel client, native application, 
 
 ## Compatibility strategy
 
-The plugin develops against the exact DeepSeek Harness `0.1.5-rc.2` contracts and retains installed-runtime evidence for the historical RCs listed in the compatibility matrix. Most integration uses declared package contracts, but several adapters are intentionally version-sensitive:
+The plugin develops against the exact DeepSeek Harness `0.1.5-rc.2` contracts. The installable Host range is declared by `engines.dsh`; most integration uses declared package contracts, but several adapters are intentionally version-sensitive:
 
 | Adapter | Why it exists | Failure behavior | Removal condition |
 | --- | --- | --- | --- |

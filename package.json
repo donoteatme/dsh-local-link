@@ -1,6 +1,6 @@
 {
   "name": "dsh-local-link",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "DeepSeek Harness plugin for lightweight LAN access to the current Web UI from phones, tablets, and other computers.",
   "publishConfig": {
     "access": "public"
@@ -27,7 +27,6 @@
     "docs/images/*.jpg",
     "docs/images/*.png",
     "docs/ARCHITECTURE.md",
-    "docs/COMPATIBILITY.md",
     "docs/DIAGNOSTICS.md",
     "docs/MOBILE_VIEW.md",
     "docs/SECURITY.md",
@@ -38,6 +37,7 @@
     "LICENSE"
   ],
   "dsh": {
+    "manifestVersion": 1,
     "bundle": {
       "patch": "./cordis.patch.yml"
     },
@@ -64,7 +64,8 @@
     "verify": "npm run typecheck && npm run test && npm pack --dry-run"
   },
   "engines": {
-    "node": "^22.19.0 || >=24.0.0"
+    "node": "^22.19.0 || >=24.0.0",
+    "dsh": "0.1.0-rc.8 || 0.1.1-rc.2 || 0.1.2-rc.1 || 0.1.5-rc.1 || 0.1.5-rc.2"
   },
   "keywords": [
     "deepseek",

@@ -56,7 +56,7 @@ dsh web
 
 ### Git clone — development checkout
 
-Requirements: Git, Node.js 22.19+ or 24+, Corepack, and a global `dsh` installation running a verified DeepSeek Harness version from the compatibility table below.
+Requirements: Git, Node.js 22.19+ or 24+, Corepack, and a global `dsh` installation compatible with the package's declared `engines.dsh` range.
 
 ```shell
 git clone https://github.com/donoteatme/dsh-local-link.git
@@ -71,20 +71,7 @@ The profile points at the checkout, so rebuild after changing client code and re
 
 ## Compatibility
 
-Compatibility is checked against exact DeepSeek Harness versions—not inferred from a successful installation.
-
-| DeepSeek Harness | Local Link status |
-| --- | --- |
-| `0.1.5-rc.2` | **Supported release** |
-| `0.1.5-rc.1` | **Verified** |
-| `0.1.2-rc.1` | **Verified** |
-| `0.1.1-rc.2` | **Verified** |
-| `0.1.1-rc.1` | **Verified** |
-| `0.1.0-rc.8` | **Verified** |
-
-All six rows passed the installed-runtime gateway and revoke gate with packed `1.1.1` source. For `1.2.0`, the current `0.1.5-rc.2` release was additionally rebuilt against the exact package contracts and exercised in the real browser client at `430 × 932` and `320 × 568`. Historical RC evidence remains recorded separately and the moving `next` tag itself is never a compatibility promise.
-
-Only the exact versions listed above carry a compatibility claim. Alpha builds—including the removed `0.1.2-alpha.1` row—versions older than `0.1.0-rc.8`, and whatever package a moving `next` tag points to later are unsupported until checked independently. See [Compatibility](docs/COMPATIBILITY.md) for the evidence and remaining real-device boundary.
+The installable DeepSeek Harness range is declared in `package.json` through `engines.dsh`. Compatibility is checked against exact releases—not inferred from a successful installation or a moving dist-tag.
 
 ## Use
 
@@ -249,7 +236,6 @@ npm run verify
 Project documentation:
 
 - [Architecture and compatibility boundaries](docs/ARCHITECTURE.md)
-- [Verified DeepSeek Harness compatibility](docs/COMPATIBILITY.md)
 - [Mobile View behavior and release matrix](docs/MOBILE_VIEW.md)
 - [Local diagnostics and event codes](docs/DIAGNOSTICS.md)
 - [Security model](docs/SECURITY.md)

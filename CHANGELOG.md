@@ -2,6 +2,18 @@
 
 All notable changes to this project are documented here.
 
+## 1.2.1 — 2026-09-21
+
+### Changed
+
+- Declared the supported DeepSeek Harness range through the official `engines.dsh` package metadata and added manifest format version `1`, allowing plugin clients to evaluate Host compatibility directly.
+- Removed the duplicated compatibility matrices and standalone compatibility document; the package manifest is now the single source of truth, while historical validation remains recorded in this changelog.
+- Updated the release contract to keep `engines.dsh` aligned with the Harness Host peer dependency.
+
+### Validated
+
+- Passed TypeScript checking, all 102 automated tests across 16 files, the production build, and package dry-run.
+
 ## 1.2.0 — 2026-09-18
 
 `1.2.0` moves the development baseline to DeepSeek Harness `0.1.5-rc.2` and

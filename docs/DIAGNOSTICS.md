@@ -83,7 +83,7 @@ The copied report wraps the retained events with a schema version and export tim
 | `AUTH_REQUIRED` | An unpaired browser opened a protected gateway page. | Pair that browser with a fresh QR/link; direct `:3088` access is intentionally rejected. |
 | `HTTP_UPSTREAM_ERROR` | The gateway could not reach Harness on `127.0.0.1:3080`. | Confirm `dsh web` is running and `upstreamOrigin` matches its port. |
 | `BROWSER_AUTH_HANDOFF_FAILED` | Harness returned an invalid browser-authentication handoff target. | Confirm the installed Harness version is supported and restart `dsh web`. |
-| `INDEX_REWRITE_ERROR` | The returned Harness index did not match the supported boot contract. | Confirm the installed Harness version appears in the compatibility matrix and restart `dsh web`. |
+| `INDEX_REWRITE_ERROR` | The returned Harness index did not match the supported boot contract. | Confirm the installed Harness version satisfies `engines.dsh` and restart `dsh web`. |
 | `WS_REJECTED` | A WebSocket upgrade failed trust, authorization, or path validation. | Re-pair the browser and verify no proxy rewrites the URL. |
 | `WS_UPSTREAM_ERROR` | The gateway could not open the loopback Harness event socket. | Confirm the desktop Harness process is still running and reload the paired browser. |
 | `CLIPBOARD_COPY_FAILED` | The browser refused or failed to copy the one-time link. | Grant clipboard permission or select and copy the displayed link manually. |

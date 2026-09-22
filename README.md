@@ -1,11 +1,12 @@
 # dsh-local-link
 
-**English** | [中文](README.zh.md)
+**English** | [中文](README.zh.md) | [Русский](README.ru.md)
 
 [![CI](https://github.com/donoteatme/dsh-local-link/actions/workflows/ci.yml/badge.svg)](https://github.com/donoteatme/dsh-local-link/actions/workflows/ci.yml)
 [![npm](https://img.shields.io/npm/v/dsh-local-link.svg)](https://www.npmjs.com/package/dsh-local-link)
 [![npm downloads](https://img.shields.io/npm/dm/dsh-local-link.svg)](https://www.npmjs.com/package/dsh-local-link)
 [![Awesome DSH Plugin](https://awesome-dsh-plugin.com/badge.svg)](https://awesome-dsh-plugin.com/p/donoteatme/dsh-local-link/)
+[![DSH Market](https://raw.githubusercontent.com/2BingLing/dsh-market/master/assets/readme/badge-listed-en.svg)](https://dsh.market/)
 [![license](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 Use the same [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) Web session from a phone, tablet, or another computer on your trusted private network. `dsh-local-link` adds one-time QR pairing and a responsive Mobile View to the stock DSH client—without a hosted relay, cloud account, native app, replacement chat UI, or second workspace picker.
@@ -22,7 +23,7 @@ The `1.2.x` line supports DeepSeek Harness `0.1.5-rc.2` and keeps the stock Web 
 
 <p align="center"><sub>One Harness session, paired directly across the trusted LAN.</sub></p>
 
-## Focused product scope
+## Features and scope
 
 Local Link is intentionally a small LAN companion for the existing Harness Web client, not a general remote-access platform. Its purpose is to make one path dependable: open the Harness instance already running on a computer from another trusted device on the same private network, then use the same sessions and interface in a browser.
 

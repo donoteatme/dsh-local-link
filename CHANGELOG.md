@@ -2,6 +2,22 @@
 
 All notable changes to this project are documented here.
 
+## 1.2.2 — 2026-09-27
+
+### Changed
+
+- Built against the exact DeepSeek Harness `0.1.7-rc.2` contracts while retaining the declared historical RC Host range.
+- Accepted Harness's weight-named icon exports while preserving the older size-named exports for previous supported Hosts.
+- Bound the mobile Current session drawer to the session-scoped trigger because the 0.1.7 list no longer contains current selection. The legacy custom subagent sheet now mounts only when its required catalog API exists; on 0.1.7 the native `dsh-client-ui-subagent` header action owns navigation.
+- Hid the duplicate stock context meter and Host-app opener in Mobile View while retaining the context breakdown in Current session and both controls on desktop.
+- Removed nine unused development-only Harness packages absent from the `0.1.7-rc.2` Host dependency graph.
+
+### Validated
+
+- Exercised one-use LAN pairing, native browser-auth handoff, authenticated page and `/api/remote.mux` WebSocket access, revoke-driven socket closure, and rejection after revoke on the running `0.1.7-rc.2` Host.
+- Checked the live mobile menu, Current session drawer, and visible header controls without horizontal overflow at 320, 360, 390, 430, and 834 CSS px.
+- Passed frozen-lockfile installation, TypeScript checking, all 103 tests, production build, package dry-run, and production dependency audit with no known vulnerabilities. Real-device mobile acceptance and the full manual plugin-surface checklist remain separate checks.
+
 ## 1.2.1 — 2026-09-21
 
 ### Changed

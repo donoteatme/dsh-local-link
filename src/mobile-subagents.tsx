@@ -5,7 +5,8 @@ import type { SubagentAddress, SubagentListEntry } from '@deepseek-ai/dsh-subage
 import type { PropsLocale, PropsRuntime } from '@deepseek-ai/dsh-client-ui-slots'
 import type {} from '@deepseek-ai/dsh-client-ui-conversation/client'
 import type {} from '@deepseek-ai/dsh-client-ui-layout/client'
-import { Button, IconChevronRightOutline14, IconCloseOutline16, StateDot } from '@deepseek-ai/dsh-client-ui-primitives'
+import { Button, StateDot } from '@deepseek-ai/dsh-client-ui-primitives'
+import { IconChevronRight, IconClose } from './compat-icons.js'
 import type { ClientContext } from './client-context.js'
 import { useMobileDialog } from './mobile-dialog.js'
 
@@ -18,6 +19,12 @@ interface SubagentMetrics {
   readonly count: number
   readonly runningCount: number
 }
+
+type LegacyCatalogs = Readonly<Record<SessionId, {
+  readonly state: 'loading' | 'error' | 'ready'
+  readonly entries: readonly SubagentListEntry[]
+}>>
+const EMPTY_CATALOGS: LegacyCatalogs = {}
 
 interface TokenUsageProjection {
   readonly uncachedInputTokens: number
@@ -159,7 +166,7 @@ export function mobileSubagentMetrics(rootSessionId: SessionId, summaries: Reado
   return Object.freeze({ count, runningCount })
 }
 
-function directCatalogMetrics(rootSessionId: SessionId, catalogs: SessionListState['subagentsByParent']): SubagentMetrics {
+function directCatalogMetrics(rootSessionId: SessionId, catalogs: LegacyCatalogs): SubagentMetrics {
   const entries = catalogs[rootSessionId]?.entries ?? []
   const healthy = entries.filter((entry): entry is Extract<SubagentListEntry, { kind: 'child' }> => entry.kind === 'child')
   return {
@@ -170,7 +177,7 @@ function directCatalogMetrics(rootSessionId: SessionId, catalogs: SessionListSta
 
 function MobileSubagentTrigger({ controller, sessionId, t, useSessions }: TriggerProps): React.JSX.Element | null {
   const summaries = useSessions((state: SessionListState) => state.byId)
-  const catalogs = useSessions((state: SessionListState) => state.subagentsByParent)
+  const catalogs = useSessions((state: SessionListState) => (state as SessionListState & { subagentsByParent?: LegacyCatalogs }).subagentsByParent ?? EMPTY_CATALOGS)
   const rootSessionId = mobileSubagentRoot(sessionId, summaries)
   const metrics = useMemo(() => mobileSubagentMetrics(rootSessionId, summaries), [rootSessionId, summaries])
   const direct = useMemo(() => directCatalogMetrics(rootSessionId, catalogs), [catalogs, rootSessionId])
@@ -183,7 +190,7 @@ function MobileSubagentTrigger({ controller, sessionId, t, useSessions }: Trigge
     <span aria-hidden="true" className="dllm-subagent-activity"><StateDot state={runningCount > 0 ? 'ongoing' : 'done'} /></span>
     <span>{label}</span>
     <span aria-hidden="true" className="dllm-subagent-running">{activityLabel}</span>
-    <IconChevronRightOutline14 className="dllm-subagent-chevron" size={14} />
+    <IconChevronRight className="dllm-subagent-chevron" size={14} />
   </Button>
 }
 
@@ -204,7 +211,7 @@ function MobileLineageTitle({ displayTitle, lineageSessionId, openTitle, useSess
 
 interface CatalogRowsProps {
   readonly actions: SubagentActions
-  readonly catalogs: SessionListState['subagentsByParent']
+  readonly catalogs: LegacyCatalogs
   readonly expanded: ReadonlySet<SessionId>
   readonly level: number
   readonly onOpen: (address: SubagentAddress) => void
@@ -250,7 +257,7 @@ function CatalogRows({ actions, catalogs, expanded, level, onOpen, onToggle, par
         <div className="dllm-subagent-row" role="treeitem" aria-expanded={entry.hasChildren ? open : undefined} style={{ '--dllm-level': level } as React.CSSProperties}>
           {entry.hasChildren
             ? <Button aria-label={open ? t('mobile.subagents.collapse') : t('mobile.subagents.expand')} className="dllm-subagent-expand" size="sm" variant="ghost" onClick={() => onToggle(entry.id, !open)}>
-                <IconChevronRightOutline14 size={14} />
+                <IconChevronRight size={14} />
               </Button>
             : <span className="dllm-subagent-expand-space" />}
           <Button className="dllm-subagent-row-main" size="md" variant="ghost" onClick={() => onOpen(address)}>
@@ -282,7 +289,7 @@ function CatalogRows({ actions, catalogs, expanded, level, onOpen, onToggle, par
 function MobileSubagentSheet({ actions, controller, t, useSessions }: SheetProps): React.JSX.Element | null {
   const snapshot = useSyncExternalStore(controller.subscribe, controller.getSnapshot)
   const rootSessionId = snapshot.rootSessionId
-  const catalogs = useSessions((state: SessionListState) => state.subagentsByParent)
+  const catalogs = useSessions((state: SessionListState) => (state as SessionListState & { subagentsByParent?: LegacyCatalogs }).subagentsByParent ?? EMPTY_CATALOGS)
   const summaries = useSessions((state: SessionListState) => state.byId)
   const [expanded, setExpanded] = useState<ReadonlySet<SessionId>>(() => new Set())
   const [now, setNow] = useState(() => Date.now())
@@ -350,7 +357,7 @@ function MobileSubagentSheet({ actions, controller, t, useSessions }: SheetProps
       <header className="dllm-subagent-sheet-header">
         <div><h2>{t('mobile.subagents.title')}</h2><p>{t('mobile.subagents.description')}</p></div>
         <Button aria-label={t('mobile.subagents.close')} className="dllm-subagent-close" size="sm" variant="ghost" onClick={() => controller.close()}>
-          <IconCloseOutline16 size={16} />
+          <IconClose size={16} />
         </Button>
       </header>
       <div className="dllm-subagent-list">
@@ -373,11 +380,19 @@ export const MOBILE_SUBAGENT_STYLES = `
 `
 
 export function applyMobileSubagents(ctx: ClientContext): void {
+  const legacySessions = ctx.sessions as typeof ctx.sessions & {
+    setSubagentCatalogOpen?: (id: SessionId, open: boolean) => void
+    openSubagent?: (address: SubagentAddress) => void
+    refreshSubagents?: (id: SessionId) => Promise<void>
+  }
+  // The 0.1.7 Session service removed the legacy catalog/open API. Its
+  // agent-team UI owns subagent navigation; do not mount an unusable sheet.
+  if (legacySessions.setSubagentCatalogOpen === undefined || legacySessions.openSubagent === undefined || legacySessions.refreshSubagents === undefined) return
   const controller = new MobileSubagentController()
   const actions: SubagentActions = {
-    observe: (parentSessionId, open) => ctx.sessions.setSubagentCatalogOpen(parentSessionId, open),
-    open: address => ctx.sessions.openSubagent(address),
-    refresh: parentSessionId => ctx.sessions.refreshSubagents(parentSessionId),
+    observe: (parentSessionId, open) => legacySessions.setSubagentCatalogOpen?.(parentSessionId, open),
+    open: address => legacySessions.openSubagent?.(address),
+    refresh: parentSessionId => legacySessions.refreshSubagents!(parentSessionId),
   }
   ctx.effect(() => ctx.slots.inject('conversation.input.dock', () => ctx.slots.register({
     name: 'conversation.input.dock',

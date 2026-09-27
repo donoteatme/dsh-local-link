@@ -142,7 +142,7 @@ describe('mobile root composition', () => {
     expect(MOBILE_STOCK_LAYOUT_STYLES).toContain('.dllm-stock-menu{')
     expect(MOBILE_STOCK_LAYOUT_STYLES).toContain('width:36px;height:36px')
     expect(MOBILE_STOCK_LAYOUT_STYLES).toContain('border:0;border-radius:8px;color:inherit;background:transparent;box-shadow:none')
-    expect(MOBILE_STOCK_LAYOUT_STYLES).toContain('header div:has(>button[data-state]):has(>button[aria-haspopup="menu"]){display:none!important}')
+    expect(MOBILE_STOCK_LAYOUT_STYLES).toContain('header [data-slot="conversation.session.header.utilities"]>span:has(>[data-open-target]){display:none!important}')
     expect(MOBILE_STOCK_LAYOUT_STYLES).not.toContain('Choose an app to open in')
   })
 
@@ -156,6 +156,11 @@ describe('mobile root composition', () => {
     expect(MOBILE_STOCK_LAYOUT_STYLES).not.toContain('width:100%;flex:1 1 100%')
     expect(MOBILE_STOCK_LAYOUT_STYLES).toContain('button[aria-haspopup="menu"]>span{display:none!important}')
     expect(MOBILE_STOCK_LAYOUT_STYLES).toContain('button[aria-haspopup="menu"]>svg:first-child{display:block!important}')
+  })
+
+  it('hides the stock context meter only within the mobile composer', () => {
+    expect(MOBILE_STOCK_LAYOUT_STYLES).toContain('body[data-dsh-local-link-mobile] [data-slot="conversation.composer.bar"] span:has(>button[aria-haspopup="dialog"]>svg>circle:nth-of-type(2)){display:none!important}')
+    expect(MOBILE_STOCK_LAYOUT_STYLES).not.toContain('[data-slot="conversation.composer.bar"]{display:none')
   })
 
   it('keeps the 0.1.5 right sidebar available as a fullscreen mobile surface', () => {

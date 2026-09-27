@@ -14,7 +14,8 @@ Presentation remains independent of authorization: changing the viewport never g
 - **Existing sessions:** Search, View options, workspaces, sessions, rename, archive, and the active-workspace actions stay native Harness operations.
 - **Dynamic views:** Chat, Trajectory, composer extensions, overlays, and third-party conversation tabs continue to resolve from Harness plugin slots.
 - **Current session:** a right drawer shows context usage and its System prompt / Tools / Messages breakdown, model, workspace access, agent preset, activity statistics, and session-log download.
-- **Subagents:** a compact status chip exposes total and active counts with the native activity state, then opens the nested subagent catalog as a touch-friendly bottom sheet.
+- **Mobile-only simplification:** the duplicate stock context meter below the conversation and the Host-app opener (Explorer/VS Code/Rider) are hidden on mobile, but remain visible on desktop.
+- **Subagents:** on 0.1.5, a compact status chip opens the nested catalog as a touch-friendly bottom sheet. On 0.1.7, Harness's native header action owns the catalog and navigation.
 - **Appearance:** a sun/moon action uses the Harness theme service. Remote theme selection remains page-scoped, so reload returns to the host preference and resolves `system` against the phone or tablet.
 - **Touch behavior:** native session and active-workspace overflow actions remain visible without a long press, and switching sessions does not automatically focus the composer or open the software keyboard.
 - **Keyboard accessibility:** plugin-owned modal drawers receive and contain focus, close with Escape, and restore focus to their invoking control.
@@ -51,7 +52,7 @@ Landscape phones, split-screen browsers, virtual keyboards, third-party fixed-wi
 
 Mobile View keeps the official Harness root and AppFrame mounted. It contributes controls through overlay, conversation, theme, session, locale, button, and input contracts wherever Harness exposes them. The stock desktop presentation is unchanged when the media query does not match.
 
-Harness `0.1.5-rc.2` does not expose a complete public responsive shell, drawer recipe, spacing/radius scale, or every required glyph. The plugin therefore owns mobile geometry and a small number of scoped presentation adapters for stock brand, workspace, session-action, and feedback elements. Those hooks are documented in [Architecture and compatibility boundaries](ARCHITECTURE.md) and must be retested for each supported Harness version.
+The supported Harness builds do not expose a complete public responsive shell, drawer recipe, or spacing/radius scale. The plugin therefore owns mobile geometry and a small number of scoped presentation adapters for stock brand, workspace, session-action, and feedback elements. Its icon adapter accepts both 0.1.7 weight-named and older size-named exports. These hooks are documented in [Architecture and compatibility boundaries](ARCHITECTURE.md) and must be retested for each supported Harness version.
 
 ## Security
 

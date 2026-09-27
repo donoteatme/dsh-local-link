@@ -3,14 +3,8 @@ import type { SessionSummary } from '@deepseek-ai/dsh-api-session-controller/cli
 import type { PropsLocale, PropsRuntime } from '@deepseek-ai/dsh-client-ui-slots'
 import type {} from '@deepseek-ai/dsh-client-ui-conversation/client'
 import type { SessionLogDownloadState } from '@deepseek-ai/dsh-session-log-export/client'
-import {
-  Button,
-  IconAgentPresetOutline16,
-  IconCloseOutline16,
-  IconDataOutline16,
-  IconDownloadOutline16,
-  IconFolderOpenOutline16,
-} from '@deepseek-ai/dsh-client-ui-primitives'
+import { Button } from '@deepseek-ai/dsh-client-ui-primitives'
+import { IconAgentPreset, IconClose, IconData, IconDownload, IconFolderOpen } from './compat-icons.js'
 import type { ClientContext } from './client-context.js'
 import { useMobileDialog } from './mobile-dialog.js'
 
@@ -54,6 +48,7 @@ interface TokenUsage {
 
 interface SessionInfoSnapshot {
   readonly open: boolean
+  readonly sessionId?: string
   readonly modelSessionId?: string
   readonly model?: string
 }
@@ -123,8 +118,9 @@ export class MobileSessionInfoController {
     return currentModelName(this.modelDirectory(sessionId)?.store.getSnapshot())
   }
 
-  open(): void {
-    this.update(true)
+  open(sessionId?: unknown): void {
+    this.snapshot = Object.freeze({ ...this.snapshot, ...(sessionId === undefined ? {} : { sessionId: String(sessionId) }), open: true })
+    for (const listener of this.listeners) listener()
   }
 
   close(): void {
@@ -340,7 +336,7 @@ function MobileSessionInfoTrigger({ controller, sessionId, t, useSession }: Trig
     title={t('mobile.sessionInfo.open')}
     size="sm"
     variant="toolbar"
-    onClick={() => controller.open()}
+    onClick={() => controller.open(sessionId)}
   >
     <svg aria-hidden="true" className="dllm-session-info-glyph" viewBox="0 0 24 24">
       <circle cx="12" cy="12" r="8.5" />
@@ -351,8 +347,7 @@ function MobileSessionInfoTrigger({ controller, sessionId, t, useSession }: Trig
 
 function MobileSessionInfoDrawer({ controller, downloads, t, useSessions }: DrawerProps): React.JSX.Element | null {
   const state = useSyncExternalStore(controller.subscribe, controller.getSnapshot)
-  const current = useSessions((snapshot: import('@deepseek-ai/dsh-api-session-controller/client').SessionListState) => snapshot.current)
-  const session = useSessions((snapshot: import('@deepseek-ai/dsh-api-session-controller/client').SessionListState) => current === undefined ? undefined : snapshot.byId[current]) as SessionSummary | undefined
+  const session = useSessions((snapshot: import('@deepseek-ai/dsh-api-session-controller/client').SessionListState) => state.sessionId === undefined ? undefined : snapshot.byId[state.sessionId as keyof typeof snapshot.byId]) as SessionSummary | undefined
   const downloadState = useSyncExternalStore<SessionLogDownloadState>(downloads.store.subscribe, downloads.store.getSnapshot)
   const download = session === undefined ? undefined : downloadState.bySession[String(session.id)]
   const downloading = download?.status === 'downloading'
@@ -376,7 +371,7 @@ function MobileSessionInfoDrawer({ controller, downloads, t, useSessions }: Draw
       <header className="dllm-session-info-header">
         <div><small>{t('mobile.sessionInfo.eyebrow')}</small><h2>{session.displayTitle}</h2></div>
         <Button aria-label={t('mobile.sessionInfo.close')} size="sm" variant="ghost" onClick={close}>
-          <IconCloseOutline16 size={16} />
+          <IconClose size={16} />
         </Button>
       </header>
       <div className="dllm-session-info-body">
@@ -400,15 +395,15 @@ function MobileSessionInfoDrawer({ controller, downloads, t, useSessions }: Draw
         </section>}
         <section className="dllm-session-info-card dllm-session-properties-card">
           <div className="dllm-session-property"><small>{t('mobile.sessionInfo.model')}</small><span>{model ?? t('mobile.sessionInfo.notRecorded')}</span></div>
-          <div className="dllm-session-property"><small className="dllm-session-property-label"><IconFolderOpenOutline16 size={13} />{t('mobile.sessionInfo.permissions')}</small><span className="dllm-session-property-value dllm-session-property-access"><PermissionGlyph value={accessValue} />{access ?? t('mobile.sessionInfo.notRecorded')}</span></div>
-          <div className="dllm-session-property"><small className="dllm-session-property-label"><IconAgentPresetOutline16 size={13} />{t('mobile.sessionInfo.agentPreset')}</small><span>{mobilePresetLabel(sessionAgentPreset(session), t)}</span></div>
+          <div className="dllm-session-property"><small className="dllm-session-property-label"><IconFolderOpen size={13} />{t('mobile.sessionInfo.permissions')}</small><span className="dllm-session-property-value dllm-session-property-access"><PermissionGlyph value={accessValue} />{access ?? t('mobile.sessionInfo.notRecorded')}</span></div>
+          <div className="dllm-session-property"><small className="dllm-session-property-label"><IconAgentPreset size={13} />{t('mobile.sessionInfo.agentPreset')}</small><span>{mobilePresetLabel(sessionAgentPreset(session), t)}</span></div>
         </section>
         {stats.length > 0 && <section className="dllm-session-info-card dllm-session-stats-card">
-          <div className="dllm-session-info-icon" aria-hidden="true"><IconDataOutline16 size={15} /></div>
+          <div className="dllm-session-info-icon" aria-hidden="true"><IconData size={15} /></div>
           <div><small>{t('mobile.sessionInfo.statistics')}</small>{stats.map(line => <p key={line}>{line}</p>)}</div>
         </section>}
         <section className="dllm-session-info-card dllm-session-log-card">
-          <div className="dllm-session-info-icon" aria-hidden="true"><IconDownloadOutline16 size={17} /></div>
+          <div className="dllm-session-info-icon" aria-hidden="true"><IconDownload size={17} /></div>
           <div><small>{t('mobile.sessionInfo.sessionLog')}</small><p>{t('mobile.sessionInfo.sessionLogDescription')}</p>
             {download?.status === 'error' && <p className="dllm-session-log-error">{download.error ?? t('mobile.sessionInfo.sessionLogError')}</p>}
             {download?.status === 'success' && <p>{t('mobile.sessionInfo.sessionLogReady')}</p>}

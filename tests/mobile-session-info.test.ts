@@ -66,8 +66,11 @@ describe('mobile session information', () => {
   it('opens and closes without keeping a second session store', () => {
     const controller = new MobileSessionInfoController()
     expect(controller.getSnapshot().open).toBe(false)
-    controller.open()
+    controller.open('first-session')
     expect(controller.getSnapshot().open).toBe(true)
+    expect(controller.getSnapshot().sessionId).toBe('first-session')
+    controller.open('second-session')
+    expect(controller.getSnapshot().sessionId).toBe('second-session')
     controller.close()
     expect(controller.getSnapshot().open).toBe(false)
   })

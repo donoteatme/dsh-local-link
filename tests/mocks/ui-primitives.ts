@@ -35,6 +35,7 @@ export const IconChevronDownOutline14 = TestIcon
 export const IconChevronRightOutline14 = TestIcon
 export const IconCloseOutline16 = TestIcon
 export const IconDarkOutline16 = TestIcon
+export const IconDataOutline16 = TestIcon
 export const IconDownloadOutline16 = TestIcon
 export const IconFolderOpenOutline16 = TestIcon
 export const IconLightOutline16 = TestIcon

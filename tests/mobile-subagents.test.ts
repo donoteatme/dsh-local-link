@@ -19,6 +19,7 @@ const summary = (value: string, parent?: string, running = false): SessionSummar
   displayTitle: value,
   blank: false,
   running,
+  retainedBy: {},
   updatedAt: 1,
   ...(parent === undefined ? {} : { origin: 'subagent' as const, parentId: id(parent) }),
 })

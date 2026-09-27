@@ -13,7 +13,7 @@ Use the same [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness)
 
 Open `Local access`, scan the QR code, and the paired browser arrives at the desktop's currently selected Harness session with the same live conversation, permissions, workspaces, and plugin surfaces.
 
-The `1.2.x` line supports DeepSeek Harness `0.1.5-rc.2` and keeps the stock Web client usable on narrow touch screens. It reorganizes the existing Harness interface into responsive drawers, compact session controls, and touch-friendly actions while keeping the same client, session, plugin slots, permissions, and live agent stream.
+The `1.2.x` line supports DeepSeek Harness `0.1.5-rc.2` and `0.1.7-rc.2` and keeps the stock Web client usable on narrow touch screens. It reorganizes the existing Harness interface into responsive drawers, compact session controls, and touch-friendly actions while keeping the same client, session, plugin slots, permissions, and live agent stream.
 
 > **Security boundary:** the gateway uses plain HTTP and is intended only for a trusted private network. Do not expose its port to the internet or use it on public Wi-Fi.
 
@@ -75,6 +75,8 @@ The profile points at the checkout, so rebuild after changing client code and re
 
 The installable DeepSeek Harness range is declared in `package.json` through `engines.dsh`. Compatibility is checked against exact releases—not inferred from a successful installation or a moving dist-tag.
 
+Local Link `1.2.2` is built against `0.1.7-rc.2`. On that release, LAN pairing, one-time browser handoff, authenticated page and WebSocket access, and immediate WebSocket closure on revoke were exercised. The mobile icon adapter accepts both the new weight-named exports and the older size-named exports. Earlier RCs remain in `engines.dsh` based on the historical checks recorded in the changelog; they were not all rerun for this patch. Physical-phone acceptance is separate from browser emulation.
+
 ## Use
 
 ### Open Harness on another device
@@ -96,7 +98,7 @@ The stock Harness Web interface is difficult to operate on a phone: persistent d
 | --- | --- |
 | Desktop navigation competes with the conversation | Workspace and session navigation opens as a dismissible left drawer |
 | Session metadata crowds the header | Context, model, access, preset, activity, and export move into a compact right drawer |
-| Subagent details are difficult to scan or reach | Total/active status stays near the composer and the native catalog opens as a bottom sheet |
+| Subagent details are difficult to scan or reach | On 0.1.5, a composer chip opens the catalog in a bottom sheet; on 0.1.7, Harness owns its header catalog and navigation |
 | Hover-oriented session and workspace actions | Overflow actions remain visible and touch-accessible |
 | Session changes can summon the software keyboard | Automatic composer focus is suppressed while intentional input focus still works |
 | Desktop spacing ignores phone safe areas | Header, composer, tabs, media, overlays, and scrolling adapt to narrow viewports |
@@ -106,7 +108,8 @@ The implementation changes presentation, not Harness ownership or behavior:
 - the native workspace/session browser becomes a left drawer;
 - dynamic Chat, Trajectory, composer, overlay, and third-party plugin slots remain intact;
 - Current session opens from the header with context breakdown, model, workspace access, preset, activity, and session-log download;
-- child-agent status shows total and active counts, then opens the native nested catalog as a touch-friendly bottom sheet;
+- on mobile, the duplicate stock context meter below the chat and the Host-app opener (Explorer/VS Code/Rider) are hidden; both remain available on desktop;
+- on 0.1.5, child-agent status opens the nested catalog in a touch-friendly bottom sheet; on 0.1.7, the native Harness subagent header action owns that navigation;
 - the Harness theme service powers a compact sun/moon action;
 - desktop-only Settings and the nested Local access action are omitted from mobile navigation, while the appearance action remains available;
 - session and active-workspace menus stay immediately available on touch screens;
@@ -114,7 +117,7 @@ The implementation changes presentation, not Harness ownership or behavior:
 - plugin-owned modal drawers contain keyboard focus and return it to the invoking control when closed;
 - existing workspaces remain available, while the misleading remote `Add workspace` directory picker is omitted.
 
-These dark-theme previews are captured from a real Harness browser session at a `430 × 932` emulated viewport. The isolated screenshot profile uses synthetic product-demo data only; no local workspace, chat, path, prompt, model, or usage data appears in them.
+These dark-theme previews were captured on Harness `0.1.5-rc.2` at a `430 × 932` emulated viewport. The isolated screenshot profile uses synthetic product-demo data only; no local workspace, chat, path, prompt, model, or usage data appears in them. The 0.1.7 subagent catalog is native to Harness and differs from the pictured bottom sheet.
 
 | Navigation | Current session | Subagents | Conversation |
 | :---: | :---: | :---: | :---: |
@@ -174,7 +177,7 @@ The gateway does not create a second Harness session. During first connection it
 
 Authorization uses a 256-bit random cookie credential. Only its SHA-256 hash is stored. The editable name and detected device/browser text never grant access.
 
-The LAN authority is declared through Harness's official connection `trustedHosts` contract. This enables authenticated session API and WebSocket traffic without pretending that the phone is loopback. Harness `0.1.2-rc.1` and the verified `0.1.5` builds authenticate the transport as a whole, so Local Link itself rejects the configuration, credential, native Host-action, and agent-preset-authoring RPCs that earlier supported Harness builds kept loopback-only.
+The LAN authority is declared through Harness's official connection `trustedHosts` contract. This enables authenticated session API and WebSocket traffic without pretending that the phone is loopback. Harness `0.1.2-rc.1` and the verified `0.1.5` and `0.1.7` builds authenticate the transport as a whole, so Local Link itself rejects the configuration, credential, native Host-action, and agent-preset-authoring RPCs that earlier supported Harness builds kept loopback-only.
 
 ## Configuration
 
@@ -253,7 +256,7 @@ Project documentation:
 - The shortcut that opens a specific Settings section uses a small semantic compatibility bridge because Harness does not expose a general settings-navigation service.
 - Harness's footer-action container needs a compatibility layout rule when the full-width Cordis action is present.
 - Mobile View targets viewports from 360 CSS pixels wide, but third-party fixed-width views, virtual keyboards, orientation changes, split-screen browsers, and operating-system text scaling still require real-device acceptance.
-- Plugin-owned buttons and text inputs use Harness `Button` and `Input` primitives and their semantic variants. Harness `0.1.5-rc.2` still has no complete public responsive-shell, spacing, or radius contract, so mobile geometry, responsive compositions, and the few missing primitive icons remain documented design-system compatibility risks.
+- Plugin-owned buttons and text inputs use Harness `Button` and `Input` primitives and their semantic variants. The supported Harness builds do not expose a complete public responsive-shell, spacing, or radius contract, so mobile geometry and responsive compositions remain documented design-system compatibility risks; icon export changes are handled by a version-tolerant adapter.
 
 ## Development disclosure
 

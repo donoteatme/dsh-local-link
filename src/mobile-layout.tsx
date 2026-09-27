@@ -5,7 +5,8 @@ import type {} from '@deepseek-ai/dsh-client-ui-sidebar/client'
 import type {} from '@deepseek-ai/dsh-client-ui-theme/client'
 import type {} from '@deepseek-ai/dsh-client-ui-conversation/client'
 import type {} from '@deepseek-ai/dsh-session-log-export/client'
-import { Button, IconDarkOutline16, IconLightOutline16 } from '@deepseek-ai/dsh-client-ui-primitives'
+import { Button } from '@deepseek-ai/dsh-client-ui-primitives'
+import { IconDark, IconLight } from './compat-icons.js'
 import type { ClientContext } from './client-context.js'
 import { applyMobileSubagents, MOBILE_SUBAGENT_STYLES } from './mobile-subagents.js'
 import { applyMobileSessionInfo, MOBILE_SESSION_INFO_STYLES } from './mobile-session-info.js'
@@ -147,8 +148,8 @@ export function MobileThemeToggle({ controller, useDarkLabel, useLightLabel }: M
     variant="ghost"
     onClick={() => controller.setDark(!dark)}
   >{dark
-      ? <IconDarkOutline16 size={16} />
-      : <IconLightOutline16 size={16} />}
+      ? <IconDark size={16} />
+      : <IconLight size={16} />}
   </Button>
 }
 
@@ -206,10 +207,11 @@ body[data-dsh-local-link-mobile] [role="treeitem"][aria-expanded]:has(>span[clas
 body[data-dsh-local-link-mobile] header{min-width:0;padding-left:max(48px,env(safe-area-inset-left));padding-right:max(8px,env(safe-area-inset-right))}
 body[data-dsh-local-link-mobile] header [data-conversation-header-corner]{flex:0 0 auto!important;min-width:max-content;margin-right:0!important}
 body[data-dsh-local-link-mobile] header .dllm-session-info-trigger{display:inline-flex!important;flex:0 0 28px!important;width:28px!important;min-width:28px!important;height:28px!important;padding:0!important}
-body[data-dsh-local-link-mobile] header div:has(>button[data-state]):has(>button[aria-haspopup="menu"]){display:none!important}
+body[data-dsh-local-link-mobile] header [data-slot="conversation.session.header.utilities"]>span:has(>[data-open-target]){display:none!important}
 body[data-dsh-local-link-mobile] textarea,body[data-dsh-local-link-mobile] input{font-size:max(16px,1em)}
 body[data-dsh-local-link-mobile] [data-composer-card] [data-input-scroll]{min-height:52px}
 body[data-dsh-local-link-mobile] [data-composer-placeholder]{white-space:normal!important;text-overflow:clip!important;overflow-wrap:anywhere;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-clamp:2;overflow:hidden}
+body[data-dsh-local-link-mobile] [data-slot="conversation.composer.bar"] span:has(>button[aria-haspopup="dialog"]>svg>circle:nth-of-type(2)){display:none!important}
 @media(max-width:480px){body[data-dsh-local-link-mobile] [data-composer-card]>div:last-child{flex-wrap:nowrap!important;gap:8px!important}body[data-dsh-local-link-mobile] [data-composer-card]>div:last-child>div:first-child{flex:1 1 auto;gap:8px!important}body[data-dsh-local-link-mobile] [data-composer-card]>div:last-child>div:last-child{box-sizing:border-box;width:auto;flex:0 0 auto;justify-content:flex-end;gap:6px!important}body[data-dsh-local-link-mobile] [data-composer-card]>div:last-child>div:last-child button[aria-haspopup="menu"]{width:28px;max-width:28px;padding:0;justify-content:center}body[data-dsh-local-link-mobile] [data-composer-card]>div:last-child>div:last-child button[aria-haspopup="menu"]>span{display:none!important}body[data-dsh-local-link-mobile] [data-composer-card]>div:last-child>div:last-child button[aria-haspopup="menu"]>svg:first-child{display:block!important}}
 body[data-dsh-local-link-mobile] [role=tablist]{display:flex;max-width:100%;overflow-x:auto;overscroll-behavior-inline:contain;scrollbar-width:none}
 body[data-dsh-local-link-mobile] [role=tablist]::-webkit-scrollbar{display:none}body[data-dsh-local-link-mobile] [role=tab]{flex:0 0 auto;min-height:40px;touch-action:manipulation}

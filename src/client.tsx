@@ -4,7 +4,8 @@ import type { PropsLocale, PropsRuntime } from '@deepseek-ai/dsh-client-ui-slots
 import type {} from '@deepseek-ai/dsh-client-locale/client'
 import type {} from '@deepseek-ai/dsh-client-ui-settings/client'
 import type {} from '@deepseek-ai/dsh-client-ui-sidebar/client'
-import { Button, IconChevronDownOutline14, Input } from '@deepseek-ai/dsh-client-ui-primitives'
+import { Button, Input } from '@deepseek-ai/dsh-client-ui-primitives'
+import { IconChevronDown } from './compat-icons.js'
 import type { ClientContext } from './client-context.js'
 import { applyResponsiveMobileEnhancements } from './mobile-layout.js'
 import en from './locales/en.json' with { type: 'json' }
@@ -439,7 +440,7 @@ function LocalLinkSettings({ t }: PropsLocale<typeof NS>): React.JSX.Element {
         </span>
         <span className="dsh-local-link__diagnostics-summary-meta">
           <span className="dsh-local-link__diagnostics-badge">{diagnosticsError ? t('diagnostics.unavailable') : diagnostics === undefined ? t('diagnostics.loading') : `${diagnostics.length} ${t('diagnostics.events')}`}</span>
-          <IconChevronDownOutline14 className="dsh-local-link__diagnostics-chevron" size={14} />
+          <IconChevronDown className="dsh-local-link__diagnostics-chevron" size={14} />
         </span>
       </summary>
       <div className="dsh-local-link__diagnostics-body">

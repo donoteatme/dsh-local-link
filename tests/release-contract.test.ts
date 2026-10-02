@@ -57,6 +57,10 @@ describe('release contract', () => {
     const russianImages = [...readmeRu.matchAll(/src="(docs\/images\/[^"]+)"/gu)].map(match => match[1])
     expect(russianImages).toEqual(images)
 
+    const chineseImages = [...readmeZh.matchAll(/src="(docs\/images\/[^"]+)"/gu)].map(match => match[1])
+    expect(chineseImages).toEqual(images.map(image => image?.replace('.png', '.zh.png')))
+    await Promise.all(chineseImages.map(async image => access(resolve(root, image ?? 'missing'))))
+
     const localLinks = [readme, readmeRu, readmeZh]
       .flatMap(source => [...source.matchAll(/\]\((?!https?:|#)([^)#]+)(?:#[^)]+)?\)/gu)])
       .map(match => match[1])

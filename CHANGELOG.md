@@ -2,6 +2,26 @@
 
 All notable changes to this project are documented here.
 
+## 1.2.3 — 2026-10-02
+
+### Changed
+
+- Built against the exact DeepSeek Harness `0.2.0-rc.2` contracts and added that release to both `engines.dsh` and the Host peer range, retaining the previously declared RC releases.
+- Refreshed all seven README screenshots from the actual `0.2.0-rc.2` browser UI in dark mode, with separate English and Simplified Chinese demo profiles. Mobile frames retain `430 × 932`; subagents show the native header catalog, not the legacy bottom sheet. Russian documentation reuses the English frames.
+
+### Fixed
+
+- Kept the new native `directoryPicker.pick`, `directoryPicker.list`, and `directoryPicker.createDirectory` RPCs inaccessible through the LAN gateway, preserving the existing trusted-LAN scope after the Host API rename.
+- Displayed recorded permission identifiers in the mobile Current session drawer when the session summary has no UI option catalog. Empty or null agent-preset identifiers now show the explicit not-recorded label. Model updates no longer discard the open drawer's session identity.
+
+### Validated
+
+- Type checking, all 105 automated tests, production build, and npm package dry-run passed against `0.2.0-rc.2`.
+- On the running `0.2.0-rc.2` Host: LAN pairing returned `204`, the native browser handoff returned `303` / `303`, the authenticated root returned `200`, and `/api/remote.mux` upgraded with `101`. Revocation closed the established WebSocket and subsequent device access returned `401`.
+- All three new native directory RPCs returned `403` through the authenticated LAN gateway. Historical RC releases were not all rerun for this patch; physical-phone acceptance remains separate from browser emulation.
+- In-browser checks at 320, 360, 390, 430, and 834 CSS pixels kept the session-info action visible, composer actions on one row, and the Host-app opener hidden without document overflow. The 320-pixel details drawer fit the viewport; a 1280-pixel desktop check retained the Host-app opener.
+- The user confirmed that the updated plugin works on their physical phone. The screenshot pass also checked the Simplified Chinese header, composer, and session drawer at 320 CSS pixels.
+
 ## 1.2.2 — 2026-09-27
 
 ### Changed

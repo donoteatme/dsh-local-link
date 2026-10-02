@@ -67,6 +67,7 @@ describe('LocalGateway', () => {
   it('keeps configuration and native Host RPCs outside the LAN gateway scope', () => {
     for (const method of [
       'host.pickDirectory', 'host.openPath',
+      'directoryPicker.pick', 'directoryPicker.list', 'directoryPicker.createDirectory',
       'settings.describe', 'settings.canOpenAgentPresetDirectory', 'settings.update',
       'settings.replace', 'settings.mutate', 'settings.openDocument',
       'settings.openSettingsDocument', 'settings.openAgentPresetDirectory',
@@ -79,6 +80,7 @@ describe('LocalGateway', () => {
     expect(isLoopbackOnlyRpcTarget(new URL('/api/agentPreset.list', 'http://gateway.test'))).toBe(false)
     expect(isLoopbackOnlyRpcTarget(new URL('/api/agentPreset.select', 'http://gateway.test'))).toBe(false)
     expect(isLoopbackOnlyRpcTarget(new URL('/api/settings%2Emutate', 'http://gateway.test'))).toBe(true)
+    expect(isLoopbackOnlyRpcTarget(new URL('/api/directoryPicker%2EcreateDirectory', 'http://gateway.test'))).toBe(true)
   })
 
   it('allows only the exact stock stream transports used by supported Harness versions', () => {
@@ -197,11 +199,13 @@ describe('LocalGateway', () => {
     expect(observedHeaders?.cookie).toBeUndefined()
     expect(gateway.trustedAuthorities()).toEqual([`127.0.0.1:${gatewayPort}`])
 
-    const blocked = await fetch(`${origin}/api/settings.describe`, {
-      method: 'POST', headers: { cookie: cookie ?? '', 'content-type': 'application/json' }, body: '{}',
-    })
-    expect(blocked.status).toBe(403)
-    expect(await blocked.text()).toContain('only on the host computer')
+    for (const method of ['settings.describe', 'directoryPicker.pick', 'directoryPicker.list', 'directoryPicker.createDirectory']) {
+      const blocked = await fetch(`${origin}/api/${method}`, {
+        method: 'POST', headers: { cookie: cookie ?? '', 'content-type': 'application/json' }, body: '{}',
+      })
+      expect(blocked.status).toBe(403)
+      expect(await blocked.text()).toContain('only on the host computer')
+    }
 
   })
 

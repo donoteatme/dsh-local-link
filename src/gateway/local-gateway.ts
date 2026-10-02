@@ -22,6 +22,9 @@ const STREAM_PATHS = new Set(['/api/events.mux', '/api/events.host', '/api/remot
 const LOOPBACK_ONLY_RPC_METHODS = new Set([
   'host.pickDirectory',
   'host.openPath',
+  'directoryPicker.pick',
+  'directoryPicker.list',
+  'directoryPicker.createDirectory',
   'settings.describe',
   'settings.canOpenAgentPresetDirectory',
   'settings.update',

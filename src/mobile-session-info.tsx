@@ -129,9 +129,10 @@ export class MobileSessionInfoController {
 
   reportModel(sessionId: string, model: string | undefined): void {
     if (this.snapshot.modelSessionId === sessionId && this.snapshot.model === model) return
+    const { model: previousModel, ...snapshot } = this.snapshot
     this.snapshot = Object.freeze(model === undefined
-      ? { open: this.snapshot.open, modelSessionId: sessionId }
-      : { open: this.snapshot.open, modelSessionId: sessionId, model })
+      ? { ...snapshot, modelSessionId: sessionId }
+      : { ...snapshot, modelSessionId: sessionId, model })
     for (const listener of this.listeners) listener()
   }
 
@@ -158,8 +159,8 @@ type DrawerProps = PropsRuntime<'shell.overlay'>
   & PropsLocale<typeof NS>
   & { readonly controller: MobileSessionInfoController; readonly downloads: SessionLogDownloadController }
 
-export function mobilePresetLabel(preset: string | undefined, t: TriggerProps['t']): string {
-  if (preset === undefined) return t('mobile.sessionInfo.notRecorded')
+export function mobilePresetLabel(preset: unknown, t: TriggerProps['t']): string {
+  if (typeof preset !== 'string' || preset.trim() === '') return t('mobile.sessionInfo.notRecorded')
   switch (preset) {
     case 'standard': return t('mobile.sessionInfo.preset.standard')
     case 'code': return t('mobile.sessionInfo.preset.code')
@@ -210,8 +211,9 @@ export function contextBreakdown(value: unknown): ContextBreakdown | undefined {
 
 export function permissionName(value: unknown): string | undefined {
   const selection = recordOf(value)
-  const currentValue = typeof selection?.currentValue === 'string' ? selection.currentValue : undefined
-  if (currentValue === undefined || !Array.isArray(selection?.options)) return undefined
+  const currentValue = permissionValue(value)
+  if (currentValue === undefined) return undefined
+  if (!Array.isArray(selection?.options)) return currentValue
   const current = selection.options.find(option => recordOf(option)?.value === currentValue)
   const name = recordOf(current)?.name
   return typeof name === 'string' ? name : currentValue
@@ -219,7 +221,9 @@ export function permissionName(value: unknown): string | undefined {
 
 export function permissionValue(value: unknown): string | undefined {
   const selection = recordOf(value)
-  return typeof selection?.currentValue === 'string' ? selection.currentValue : undefined
+  // Session summaries may carry the persisted preset rather than the UI catalog.
+  const currentValue = selection?.currentValue ?? selection?.preset
+  return typeof currentValue === 'string' && currentValue.length > 0 ? currentValue : undefined
 }
 
 export function currentModelName(value: unknown): string | undefined {

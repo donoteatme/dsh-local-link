@@ -1,9 +1,16 @@
 [
-  "docs/images/local-access-qr.jpg",
-  "docs/images/local-access-devices.jpg",
-  "docs/images/local-access-diagnostics.jpg",
+  "docs/images/local-access-qr.png",
+  "docs/images/local-access-devices.png",
+  "docs/images/local-access-diagnostics.png",
   "docs/images/mobile-navigation.png",
   "docs/images/mobile-chat.png",
   "docs/images/mobile-subagents.png",
-  "docs/images/mobile-session-info.png"
+  "docs/images/mobile-session-info.png",
+  "docs/images/local-access-qr.zh.png",
+  "docs/images/local-access-devices.zh.png",
+  "docs/images/local-access-diagnostics.zh.png",
+  "docs/images/mobile-navigation.zh.png",
+  "docs/images/mobile-chat.zh.png",
+  "docs/images/mobile-subagents.zh.png",
+  "docs/images/mobile-session-info.zh.png"
 ]

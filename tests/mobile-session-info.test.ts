@@ -63,6 +63,18 @@ describe('mobile session information', () => {
     expect(lastUsedModel(undefined)).toBeUndefined()
   })
 
+  it('shows permission identifiers when the session summary has no UI catalog', () => {
+    expect(permissionName({ currentValue: 'workspace-write' })).toBe('workspace-write')
+    expect(permissionName({ preset: 'workspace-write' })).toBe('workspace-write')
+    expect(permissionValue({ preset: 'custom-preset' })).toBe('custom-preset')
+    expect(permissionValue({ preset: null })).toBeUndefined()
+    expect(permissionName({ preset: '' })).toBeUndefined()
+    expect(mobilePresetLabel('', t)).toBe('Not recorded')
+    expect(mobilePresetLabel('  ', t)).toBe('Not recorded')
+    expect(mobilePresetLabel(null, t)).toBe('Not recorded')
+    expect(mobilePresetLabel({ id: 'standard' }, t)).toBe('Not recorded')
+  })
+
   it('opens and closes without keeping a second session store', () => {
     const controller = new MobileSessionInfoController()
     expect(controller.getSnapshot().open).toBe(false)
@@ -79,6 +91,16 @@ describe('mobile session information', () => {
     expect(mobilePresetLabel('standard', t)).toBe('Standard mode')
     expect(mobilePresetLabel('my-agent', t)).toBe('my-agent')
     expect(mobilePresetLabel(undefined, t)).toBe('Not recorded')
+  })
+
+  it('keeps the open drawer session when the selected model resolves or disappears', () => {
+    const controller = new MobileSessionInfoController()
+    controller.open('first-session')
+    controller.reportModel('first-session', 'model-a')
+    expect(controller.getSnapshot()).toMatchObject({ open: true, sessionId: 'first-session', model: 'model-a' })
+    controller.reportModel('first-session', undefined)
+    expect(controller.getSnapshot()).toMatchObject({ open: true, sessionId: 'first-session' })
+    expect(controller.getSnapshot().model).toBeUndefined()
   })
 
   it('renders a right-side mobile drawer rather than taking over Harness details', () => {

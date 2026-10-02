@@ -15,7 +15,7 @@ Presentation remains independent of authorization: changing the viewport never g
 - **Dynamic views:** Chat, Trajectory, composer extensions, overlays, and third-party conversation tabs continue to resolve from Harness plugin slots.
 - **Current session:** a right drawer shows context usage and its System prompt / Tools / Messages breakdown, model, workspace access, agent preset, activity statistics, and session-log download.
 - **Mobile-only simplification:** the duplicate stock context meter below the conversation and the Host-app opener (Explorer/VS Code/Rider) are hidden on mobile, but remain visible on desktop.
-- **Subagents:** on 0.1.5, a compact status chip opens the nested catalog as a touch-friendly bottom sheet. On 0.1.7, Harness's native header action owns the catalog and navigation.
+- **Subagents:** on 0.1.5, a compact status chip opens the nested catalog as a touch-friendly bottom sheet. On 0.1.7 and 0.2, Harness's native header action owns the catalog and navigation.
 - **Appearance:** a sun/moon action uses the Harness theme service. Remote theme selection remains page-scoped, so reload returns to the host preference and resolves `system` against the phone or tablet.
 - **Touch behavior:** native session and active-workspace overflow actions remain visible without a long press, and switching sessions does not automatically focus the composer or open the software keyboard.
 - **Keyboard accessibility:** plugin-owned modal drawers receive and contain focus, close with Escape, and restore focus to their invoking control.

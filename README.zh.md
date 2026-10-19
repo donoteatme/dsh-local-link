@@ -13,12 +13,12 @@
 
 打开 `Local access` 并扫描二维码后，已配对的浏览器会进入桌面端当前选中的 Harness 会话，并继续使用相同的实时对话、权限、工作区和插件界面。
 
-`1.2.x` 系列支持 DeepSeek Harness `0.1.5-rc.2`、`0.1.7-rc.2` 和 `0.2.0-rc.2`，并让原生 Web 客户端可以在窄屏触控设备上使用。移动视图只调整界面布局，不接管 Harness 的会话、权限或业务逻辑。
+`1.2.x` 系列支持 DeepSeek Harness `0.1.5-rc.2`、`0.1.7-rc.2`、`0.2.0-rc.2` 和 `0.2.1-rc.2`，并让原生 Web 客户端可以在窄屏触控设备上使用。移动视图只调整界面布局，不接管 Harness 的会话、权限或业务逻辑。
 
 > **安全边界：** 网关使用明文 HTTP，仅适用于可信私有网络。不要将端口暴露到互联网，也不要在公共 Wi-Fi 上使用。
 
 <p align="center">
-  <img src="docs/images/local-access-qr.zh.png" width="960" alt="DeepSeek Harness 中的 dsh-local-link 一次性二维码配对界面">
+  <img src="docs/images/local-access-qr.zh.jpg" width="960" alt="DeepSeek Harness 中的 dsh-local-link 一次性二维码配对界面">
 </p>
 
 <p align="center"><sub>通过可信局域网直接打开同一个 Harness 会话。</sub></p>
@@ -71,9 +71,11 @@ profile 会指向当前 checkout。修改客户端代码后需要重新构建；
 
 ## 兼容性
 
+Local Link `1.2.4` 使用 DeepSeek Harness `0.2.1-rc.2` 的契约构建并完成验证。支持 `webStartup` 可信地址配置，同时保留旧版 `webRuntime` 回退。二维码中的会话选择和移动端自动聚焦保护使用公开的会话作用域；已配对设备快捷入口通过当前原生 Settings 启动器打开设置。
+
 可安装的 DeepSeek Harness 版本范围通过 `package.json` 中的 `engines.dsh` 声明。兼容性按精确发布版本验证，不会因为安装成功或可变的 dist-tag 就推断为兼容。
 
-Local Link `1.2.3` 使用 Harness `0.2.0-rc.2` 的开发契约构建，并在该版本上验证了局域网配对、一次性浏览器登录、经过认证的页面与 WebSocket 访问，以及撤销设备后立即关闭 WebSocket。新版 `directoryPicker` API 的目录选择、浏览和创建仍仅允许在主机本地使用，不能通过局域网调用。移动图标适配器兼容新版按线条粗细命名的导出和旧版按尺寸命名的导出。`engines.dsh` 中保留的早期 RC 基于更新日志中的历史验证；本次补丁未重新运行所有旧版本。实体手机验收仍需单独进行。
+在 `0.2.1-rc.2` 上已验证局域网配对、二维码打开所选会话、认证 HTTP/WebSocket、撤销设备后立即关闭连接、目录选择 RPC 的局域网限制，以及 EN/ZH 在 320–768 CSS px 的移动布局。较早 Host 的声明依据[更新日志](CHANGELOG.md)中的历史验收；本次未重新运行全部旧版本矩阵或实体手机验收。普通局域网 HTTP 仍不支持手机麦克风录音；本次发布不提供 HTTPS 或语音输入。
 
 ## 使用方法
 
@@ -100,11 +102,11 @@ Local Link `1.2.3` 使用 Harness `0.2.0-rc.2` 的开发契约构建，并在该
 - 手机端隐藏聊天底部重复的上下文用量指示器和在电脑上打开文件的按钮（资源管理器/VS Code/Rider）；桌面端仍保留，手机端可在 `Current session` 查看上下文详情；
 - 顶栏、消息操作、输入工具、安全区域和虚拟键盘行为适配窄屏。
 
-以下深色主题截图来自 Harness `0.2.0-rc.2` 的真实浏览器会话，使用 `430 × 932` 模拟视口。独立截图配置只包含虚构的工作区、对话、模型、设备和用量数据，不包含真实项目数据。中文 README 使用独立的简体中文截图；子智能体通过 Harness 原生的标题栏目录展示。
+以下深色主题截图来自 Harness `0.2.1-rc.2` 的真实浏览器会话：移动截图为 `430 × 932`，桌面截图为 `1440 × 1000`。独立演示配置只包含虚构的工作区、对话、模型、设备和用量，不包含真实项目数据。中文 README 使用独立的简体中文截图，俄文文档复用英文截图；子智能体通过 Harness 原生标题栏目录展示。
 
 | 导航 | 当前会话 | 子智能体 | 对话 |
 | :---: | :---: | :---: | :---: |
-| <img src="docs/images/mobile-navigation.zh.png" width="210" alt="包含虚构工作区与会话的深色移动导航抽屉"> | <img src="docs/images/mobile-session-info.zh.png" width="210" alt="包含虚构模型、工作区权限、统计和会话日志数据的深色当前会话抽屉"> | <img src="docs/images/mobile-subagents.zh.png" width="210" alt="包含两个虚构子智能体的原生深色标题栏目录"> | <img src="docs/images/mobile-chat.zh.png" width="210" alt="包含原生消息操作和单行输入工具的深色 Harness 移动对话"> |
+| <img src="docs/images/mobile-navigation.zh.jpg" width="210" alt="包含虚构工作区与会话的深色移动导航抽屉"> | <img src="docs/images/mobile-session-info.zh.jpg" width="210" alt="包含虚构模型、工作区权限、统计和会话日志数据的深色当前会话抽屉"> | <img src="docs/images/mobile-subagents.zh.jpg" width="210" alt="包含两个虚构子智能体的原生深色标题栏目录"> | <img src="docs/images/mobile-chat.zh.jpg" width="210" alt="包含原生消息操作和单行输入工具的深色 Harness 移动对话"> |
 
 ### 权限
 
@@ -123,13 +125,13 @@ Local Link `1.2.3` 使用 Harness `0.2.0-rc.2` 的开发契约构建，并在该
 浏览器无法可靠区分笔记本与台式机，因此两者统一显示为 `Computer`。
 
 <p align="center">
-  <img src="docs/images/local-access-devices.zh.png" width="960" alt="DeepSeek Harness Local access 已配对设备列表">
+  <img src="docs/images/local-access-devices.zh.jpg" width="960" alt="DeepSeek Harness Local access 已配对设备列表">
 </p>
 
 展开同一设置页的 `诊断` 面板，可查看本地网关事件，并复制经过隐私过滤的报告。报告不包含配对令牌、Cookie、地址、设备名称、请求路径或对话内容。
 
 <p align="center">
-  <img src="docs/images/local-access-diagnostics.zh.png" width="960" alt="DeepSeek Harness 本地访问设置中展开的诊断面板">
+  <img src="docs/images/local-access-diagnostics.zh.jpg" width="960" alt="DeepSeek Harness 本地访问设置中展开的诊断面板">
 </p>
 
 ## 工作原理

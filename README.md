@@ -13,12 +13,12 @@ Use the same [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness)
 
 Open `Local access`, scan the QR code, and the paired browser arrives at the desktop's currently selected Harness session with the same live conversation, permissions, workspaces, and plugin surfaces.
 
-The `1.2.x` line supports DeepSeek Harness `0.1.5-rc.2`, `0.1.7-rc.2`, and `0.2.0-rc.2` and keeps the stock Web client usable on narrow touch screens. It reorganizes the existing Harness interface into responsive drawers, compact session controls, and touch-friendly actions while keeping the same client, session, plugin slots, permissions, and live agent stream.
+The `1.2.x` line supports DeepSeek Harness `0.1.5-rc.2`, `0.1.7-rc.2`, `0.2.0-rc.2`, and `0.2.1-rc.2` and keeps the stock Web client usable on narrow touch screens. It reorganizes the existing Harness interface into responsive drawers, compact session controls, and touch-friendly actions while keeping the same client, session, plugin slots, permissions, and live agent stream.
 
 > **Security boundary:** the gateway uses plain HTTP and is intended only for a trusted private network. Do not expose its port to the internet or use it on public Wi-Fi.
 
 <p align="center">
-  <img src="docs/images/local-access-qr.png" width="960" alt="DeepSeek Harness with dsh-local-link open: one-time QR pairing to the current stock Harness session">
+  <img src="docs/images/local-access-qr.jpg" width="960" alt="DeepSeek Harness with dsh-local-link open: one-time QR pairing to the current stock Harness session">
 </p>
 
 <p align="center"><sub>One Harness session, paired directly across the trusted LAN.</sub></p>
@@ -73,9 +73,11 @@ The profile points at the checkout, so rebuild after changing client code and re
 
 ## Compatibility
 
+Local Link `1.2.4` is built and checked against DeepSeek Harness `0.2.1-rc.2`. It supports `webStartup` trusted-host configuration with the older `webRuntime` fallback. QR Session identity and mobile autofocus use public Session scopes; the Paired devices shortcut follows the current native Settings launcher.
+
 The installable DeepSeek Harness range is declared in `package.json` through `engines.dsh`. Compatibility is checked against exact releases—not inferred from a successful installation or a moving dist-tag.
 
-Local Link `1.2.3` is built against `0.2.0-rc.2`. On that release, LAN pairing, one-time browser handoff, authenticated page and WebSocket access, and immediate WebSocket closure on revoke were exercised. Native directory selection, browsing, and creation remain loopback-only under the new `directoryPicker` API. The mobile icon adapter accepts both the new weight-named exports and the older size-named exports. Earlier RCs remain in `engines.dsh` based on the historical checks recorded in the changelog; they were not all rerun for this patch. Physical-phone acceptance is separate from browser emulation.
+Acceptance on `0.2.1-rc.2` covers LAN pairing, selected-chat QR handoff, authenticated HTTP/WebSocket access, immediate socket closure on revoke, loopback-only directory RPC restrictions, and mobile layouts at 320–768 CSS pixels in EN and ZH. Earlier Host declarations retain the historical acceptance recorded in the [changelog](CHANGELOG.md); the full old-version matrix and physical-phone checks were not rerun. Mobile microphone capture over plain LAN HTTP remains unsupported; this release adds neither HTTPS nor voice input.
 
 ## Use
 
@@ -117,11 +119,11 @@ The implementation changes presentation, not Harness ownership or behavior:
 - plugin-owned modal drawers contain keyboard focus and return it to the invoking control when closed;
 - existing workspaces remain available, while the misleading remote `Add workspace` directory picker is omitted.
 
-These dark-theme previews were captured from real Harness `0.2.0-rc.2` browser sessions at a `430 × 932` emulated viewport. The isolated screenshot profiles contain fictional workspaces, conversations, models, devices, and usage only; no real project data appears. The Chinese README has its own Simplified Chinese captures. Subagents use the native Harness header catalog.
+These dark-theme previews were captured from real Harness `0.2.1-rc.2` browser sessions: mobile frames are `430 × 932`, desktop frames are `1440 × 1000`. The isolated profiles contain fictional workspaces, conversations, models, devices, and usage only. The Chinese README has its own Simplified Chinese captures; Russian documentation shares the English images. Subagents use the native Harness header catalog.
 
 | Navigation | Current session | Subagents | Conversation |
 | :---: | :---: | :---: | :---: |
-| <img src="docs/images/mobile-navigation.png" width="210" alt="Dark Mobile View navigation drawer with a synthetic workspace and session"> | <img src="docs/images/mobile-session-info.png" width="210" alt="Dark Mobile View Current session drawer with synthetic model, workspace access, statistics, and session log data"> | <img src="docs/images/mobile-subagents.png" width="210" alt="Native dark Harness header catalog with two synthetic child agents"> | <img src="docs/images/mobile-chat.png" width="210" alt="Dark Mobile View Harness conversation with native message actions and one-line composer controls"> |
+| <img src="docs/images/mobile-navigation.jpg" width="210" alt="Dark Mobile View navigation drawer with a synthetic workspace and session"> | <img src="docs/images/mobile-session-info.jpg" width="210" alt="Dark Mobile View Current session drawer with synthetic model, workspace access, statistics, and session log data"> | <img src="docs/images/mobile-subagents.jpg" width="210" alt="Native dark Harness header catalog with two synthetic child agents"> | <img src="docs/images/mobile-chat.jpg" width="210" alt="Dark Mobile View Harness conversation with native message actions and one-line composer controls"> |
 
 ### Permissions
 
@@ -140,13 +142,13 @@ On the Harness computer, use `Paired devices` in the QR panel or open `Settings 
 Browsers do not reliably distinguish laptops from desktop computers, so both are shown as `Computer`.
 
 <p align="center">
-  <img src="docs/images/local-access-devices.png" width="960" alt="DeepSeek Harness Settings opened directly on the compact Local access paired-device list">
+  <img src="docs/images/local-access-devices.jpg" width="960" alt="DeepSeek Harness Settings opened directly on the compact Local access paired-device list">
 </p>
 
 Expand `Diagnostics` on the same Settings page to inspect the most recent local gateway events. `Copy report` produces issue-ready JSON and `Clear` removes the local history. The report contains event codes, timestamps, severity, and a small allowlisted context only; it never includes pairing tokens, cookies, IP addresses, device or session IDs, device names, request paths, prompts, conversations, or project files.
 
 <p align="center">
-  <img src="docs/images/local-access-diagnostics.png" width="960" alt="DeepSeek Harness Local access settings with the native-style Diagnostics panel expanded">
+  <img src="docs/images/local-access-diagnostics.jpg" width="960" alt="DeepSeek Harness Local access settings with the native-style Diagnostics panel expanded">
 </p>
 
 ## Why it stays small

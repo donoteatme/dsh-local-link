@@ -450,11 +450,14 @@ export function applyMobileSessionInfo(ctx: ClientContext): void {
     id: 'session-log-download',
     priority: MOBILE_SESSION_LOG_PRIORITY,
   }, () => null)), 'dsh-local-link: move mobile session log out of header')
-  ctx.effect(() => ctx.slots.inject('conversation.composer.dock', () => ctx.slots.register({
-    name: 'conversation.composer.dock',
-    id: 'stats',
-    priority: MOBILE_STATS_PRIORITY,
-  }, () => null)), 'dsh-local-link: move mobile session statistics into session info')
+  // Current Hosts split the former stats contribution into activity and usage.
+  for (const id of ['stats', 'activity', 'usage']) {
+    ctx.effect(() => ctx.slots.inject('conversation.composer.dock', () => ctx.slots.register({
+      name: 'conversation.composer.dock',
+      id,
+      priority: MOBILE_STATS_PRIORITY,
+    }, () => null)), 'dsh-local-link: move mobile session statistics into session info')
+  }
   ctx.effect(() => ctx.slots.inject('conversation.session.header.utilities', () => ctx.slots.register({
     name: 'conversation.session.header.utilities',
     id: MOBILE_SESSION_INFO_TRIGGER_ID,

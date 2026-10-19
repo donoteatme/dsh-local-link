@@ -8,6 +8,8 @@ import { Button, Input } from '@deepseek-ai/dsh-client-ui-primitives'
 import { IconChevronDown } from './compat-icons.js'
 import type { ClientContext } from './client-context.js'
 import { applyResponsiveMobileEnhancements } from './mobile-layout.js'
+import { CurrentSessionTracker, trackCurrentSession } from './session-selection.js'
+import { openSettingsSection } from './settings-navigation.js'
 import en from './locales/en.json' with { type: 'json' }
 import zh from './locales/zh.json' with { type: 'json' }
 
@@ -72,7 +74,10 @@ interface PopoverPosition {
 }
 
 type FooterProps = PropsRuntime<'sidebar.footer.action'> & PropsLocale<typeof NS>
-type LocalLinkFooterProps = FooterProps & { readonly getCurrentSessionId: () => string | undefined }
+type LocalLinkFooterProps = FooterProps & {
+  readonly getCurrentSessionId: () => string | undefined
+  readonly getSettingsLabel: () => string
+}
 
 function desktopOrigin(): boolean {
   return location.hostname === 'localhost' || location.hostname === '127.0.0.1' || location.hostname === '::1'
@@ -130,25 +135,6 @@ function normalizeDiagnostics(payload: DiagnosticsPayload): DiagnosticEvent[] {
   })
 }
 
-function openSettingsSection(label: string): void {
-  const trigger = document.querySelector<HTMLButtonElement>('button[aria-haspopup="dialog"][aria-expanded]')
-  if (trigger === null) return
-  trigger.click()
-  let attempts = 0
-  const selectSection = (): void => {
-    const dialog = document.querySelector<HTMLElement>('[role="dialog"]')
-    const target = dialog === null ? undefined : [...dialog.querySelectorAll<HTMLButtonElement>('nav button')]
-      .find(button => button.textContent?.trim() === label)
-    if (target !== undefined) {
-      target.click()
-      return
-    }
-    attempts += 1
-    if (attempts < 10) window.requestAnimationFrame(selectSection)
-  }
-  window.requestAnimationFrame(selectSection)
-}
-
 async function jsonRequest<T>(path: string, init?: RequestInit): Promise<T> {
   const response = await fetch(path, {
     ...init,
@@ -187,7 +173,7 @@ const styles = `
 .dsh-local-link-popover__error{color:var(--dsw-alias-state-error-primary,#c53030)!important}
 `
 
-function LocalLinkFooter({ wide, t, getCurrentSessionId }: LocalLinkFooterProps): React.JSX.Element | null {
+function LocalLinkFooter({ wide, t, getCurrentSessionId, getSettingsLabel }: LocalLinkFooterProps): React.JSX.Element | null {
   const desktop = desktopOrigin()
   const root = useRef<HTMLDivElement>(null)
   const popover = useRef<HTMLElement>(null)
@@ -305,7 +291,10 @@ function LocalLinkFooter({ wide, t, getCurrentSessionId }: LocalLinkFooterProps)
     {open && <section className="dsh-local-link-popover" ref={popover} style={popoverPosition ?? { visibility: 'hidden' }} aria-label={t('connect.title')}>
       <div className="dsh-local-link-popover__header">
         <strong>{t('connect.title')}</strong>
-        <Button className="dsh-local-link-popover__manage" size="sm" variant="ghost" onClick={() => { setOpen(false); openSettingsSection(t('nav')) }}>{t('connect.pairedDevices')}</Button>
+        <Button className="dsh-local-link-popover__manage" size="sm" variant="ghost" onClick={() => {
+          setOpen(false)
+          openSettingsSection({ section: t('nav'), settings: getSettingsLabel() })
+        }}>{t('connect.pairedDevices')}</Button>
       </div>
       <p>{t('connect.description')}</p>
       <div className="dsh-local-link-popover__content" aria-busy={pairing === undefined && !error} aria-live="polite">
@@ -525,6 +514,8 @@ export function installResponsiveMobileLayout(
 export const inject = ['slots', 'theme', 'locale', 'sessions', 'sessionLogDownload', 'layout']
 
 export function apply(ctx: ClientContext): void {
+  const currentSession = new CurrentSessionTracker()
+  ctx.effect(() => trackCurrentSession(ctx, currentSession), 'dsh-local-link: current session for invitations')
   ctx.effect(() => ctx.locale.register(NS, { en, zh }), 'dsh-local-link: locale dictionaries')
 
   ctx.effect(() => installResponsiveMobileLayout(
@@ -541,8 +532,9 @@ export function apply(ctx: ClientContext): void {
   }, 'dsh-local-link: interface styles')
 
   ctx.effect(() => {
-    const getCurrentSessionId = (): string | undefined => ctx.sessions.list.getSnapshot().current
-    const Footer = (props: FooterProps): React.JSX.Element => <LocalLinkFooter {...props} getCurrentSessionId={getCurrentSessionId} />
+    const getCurrentSessionId = currentSession.getCurrent
+    const getSettingsLabel = (): string => ctx.locale.bind('settings')('trigger')
+    const Footer = (props: FooterProps): React.JSX.Element => <LocalLinkFooter {...props} getCurrentSessionId={getCurrentSessionId} getSettingsLabel={getSettingsLabel} />
     return ctx.slots.inject('sidebar.footer.action', () => ctx.slots.register({
       name: 'sidebar.footer.action',
       id: 'local-link-connect',

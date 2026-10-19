@@ -53,8 +53,10 @@ describe('Harness connection trust boundary', () => {
 
     // The RC authenticates normal RPC routes before dispatch. Reaching 401
     // proves the declared gateway authority passed the Host/Origin fence.
-    expect(await rpcStatus(context.webServer.port, 'gateway.test:3088', 'session.list')).toBe(401)
-    expect(await rpcStatus(context.webServer.port, 'untrusted.test:3088', 'session.list')).toBe(403)
+    const port = context.webServer.port
+    if (port === undefined) throw new Error('Trust-boundary test requires a TCP listener')
+    expect(await rpcStatus(port, 'gateway.test:3088', 'session.list')).toBe(401)
+    expect(await rpcStatus(port, 'untrusted.test:3088', 'session.list')).toBe(403)
   })
 
   it('wires gateway authorities into the public trustedHosts config without mutating client loopback state', async () => {
@@ -62,8 +64,22 @@ describe('Harness connection trust boundary', () => {
       readFile(new URL('../cordis.patch.yml', import.meta.url), 'utf8'),
       readFile(new URL('../src/client.tsx', import.meta.url), 'utf8'),
     ])
-    expect(patch).toContain('inject: [webRuntime, localLinkGateway]')
+    expect(patch).toContain('inject: [localLinkGateway]')
+    expect(patch).toContain('ctx.root.webStartup?.trustedHosts ?? ctx.root.webRuntime?.trustedHosts ?? []')
     expect(patch).toContain('...ctx.localLinkGateway.trustedHosts')
     expect(client).not.toMatch(/isLoopback\s*=/u)
+  })
+
+  it('preserves deployment authorities on old and new Harness startup services', async () => {
+    const patch = await readFile(new URL('../cordis.patch.yml', import.meta.url), 'utf8')
+    const expression = patch.match(/trustedHosts: !!js "([^"\n]+)"/u)?.[1]
+    expect(expression).toBeTruthy()
+    const resolveHosts = new Function('ctx', `return ${expression}`) as (ctx: unknown) => string[]
+    const gateway = { trustedHosts: ['192.168.1.66:3088'] }
+    expect(resolveHosts({ root: { webStartup: { trustedHosts: ['new.example'] } }, localLinkGateway: gateway }))
+      .toEqual(['new.example', '192.168.1.66:3088'])
+    expect(resolveHosts({ root: { webRuntime: { trustedHosts: ['old.example'] } }, localLinkGateway: gateway }))
+      .toEqual(['old.example', '192.168.1.66:3088'])
+    expect(resolveHosts({ root: {}, localLinkGateway: gateway })).toEqual(['192.168.1.66:3088'])
   })
 })

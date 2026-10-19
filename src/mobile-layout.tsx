@@ -1,4 +1,5 @@
-import React, { useSyncExternalStore } from 'react'
+import React, { useLayoutEffect, useSyncExternalStore } from 'react'
+import type { PropsRuntime } from '@deepseek-ai/dsh-client-ui-slots'
 import type { ILayout } from '@deepseek-ai/dsh-client-ui-layout/client'
 import type {} from '@deepseek-ai/dsh-client-locale/client'
 import type {} from '@deepseek-ai/dsh-client-ui-sidebar/client'
@@ -68,8 +69,26 @@ export class MobileComposerAutofocusGuard {
   }
 }
 
+/** Follow the rendered Session scope, not the Host catalog's former `current` field. */
+export function observeMobileComposerSession(
+  guard: MobileComposerAutofocusGuard,
+  sessionId: string | undefined,
+  activeInput: () => { blur(): void } | null,
+): () => void {
+  if (guard.selectionChanged(sessionId)) activeInput()?.blur()
+  return () => { guard.selectionChanged(undefined) }
+}
+
+function MobileComposerSessionObserver({ sessionId, guard, activeInput }: PropsRuntime<'conversation.input.dock'> & {
+  readonly guard: MobileComposerAutofocusGuard
+  readonly activeInput: () => HTMLElement | null
+}): null {
+  useLayoutEffect(() => observeMobileComposerSession(guard, sessionId, activeInput), [guard, sessionId, activeInput])
+  return null
+}
+
 function installMobileComposerAutofocusGuard(ctx: ClientContext): () => void {
-  const guard = new MobileComposerAutofocusGuard(ctx.sessions.list.getSnapshot().current)
+  const guard = new MobileComposerAutofocusGuard(undefined)
   const composerInput = (target: EventTarget | null): HTMLElement | null => {
     if (!(target instanceof HTMLElement)) return null
     const input = target.closest<HTMLElement>('textarea,[contenteditable="true"]')
@@ -78,11 +97,12 @@ function installMobileComposerAutofocusGuard(ctx: ClientContext): () => void {
       || document.body.hasAttribute('data-dsh-local-link-mobile')
     return mobileSurface ? input : null
   }
-  const offSessions = ctx.sessions.list.subscribe(() => {
-    if (guard.selectionChanged(ctx.sessions.list.getSnapshot().current)) {
-      composerInput(document.activeElement)?.blur()
-    }
-  })
+  const activeInput = (): HTMLElement | null => composerInput(document.activeElement)
+  const offSessions = ctx.slots.inject('conversation.input.dock', () => ctx.slots.register({
+    name: 'conversation.input.dock',
+    id: 'dsh-local-link.mobile-composer-session',
+    order: -100,
+  }, props => <MobileComposerSessionObserver {...props} guard={guard} activeInput={activeInput} />))
   const onPointerDown = (event: PointerEvent): void => {
     const target = composerInput(event.target)
     if (target !== null) guard.pointerDown(target, Date.now())

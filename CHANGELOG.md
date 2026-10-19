@@ -2,6 +2,31 @@
 
 All notable changes to this project are documented here.
 
+## 1.2.4 — 2026-10-19
+
+### Changed
+
+- Updated the exact development contracts and Host compatibility metadata to DeepSeek Harness `0.2.1-rc.2`, verified as npm `latest` on 2026-10-19. Aligned Cordis/Schemastery and regenerated the dependency graph without stale auto-installed peers; no new runtime dependency was added.
+- Replaced all 14 README images with approved, real-browser dark-theme captures on `0.2.1-rc.2`: separate English and Simplified Chinese demo profiles, `430 × 932` mobile frames and `1440 × 1000` desktop frames. Russian documentation shares the English captures. Images use JPEG without re-encoding or relabelling PNG data.
+- Adjusted the connection trust-boundary test for WebServer's optional TCP port (the Host also supports non-TCP listeners); the test still requires a real TCP listener and does not skip authentication checks.
+- Retained the previously checked `0.2.1-alpha.2` and historical RC declarations; the older RC matrix was not rerun in full.
+- Preserved invocation trusted hosts across the `webRuntime` to `webStartup` transition without requiring the removed service. The gateway's existing `webServer` dependency orders startup before the connection trust expression is evaluated.
+- Adapted the legacy subagent address type to the new external catalog-entry mode; current Harness continues to own native subagent navigation.
+
+### Fixed
+
+- Restored the QR popover's Paired devices shortcut on current Hosts through the localized native account-menu Settings action, retaining a scoped direct-trigger fallback for older Hosts. The bridge no longer selects an unrelated session-statistics dialog trigger, does not toggle an already open menu, and stops waiting after a bounded user-initiated attempt.
+- Restored mobile autofocus suppression after Session navigation using the rendered Session scope rather than the removed catalog `current` field. Explicit taps on the composer still focus the editor normally.
+- Read the desktop QR invitation's Session identity from the same public Session scope, without reaching into the Workspace service's private selection store.
+- Kept the new native `activity` and `usage` composer pills inside mobile Current session details, alongside the older `stats` contribution; desktop statistics are unchanged.
+
+### Validation
+
+- On `0.2.1-rc.2`: typecheck, 117 tests across 18 files, build and package dry-run passed with no peer-dependency issues. Live LAN pairing returned `204`, browser handoff `303` / `303`, authenticated root `200`, and `/api/remote.mux` upgraded with `101`. Revocation immediately closed the established WebSocket and subsequent access returned `401`. All three directory-picker RPCs remained blocked with `403`. Headless Chromium covered an existing chat at widths 320, 360, 390, 430 and 768 px: no horizontal overflow, visible session-info action, single-row composer controls, no Host-app opener, and no unsolicited composer focus. The session-details drawer fit at 320 px. Physical-phone, Russian voice and the full historical RC matrix were not rerun.
+- Typecheck, 106 tests across 16 files, build and package dry-run passed against `0.2.1-alpha.2`; startup passed without a version exemption. Browser checks covered LAN pairing/handoff, existing-chat loading, navigation and session details at widths 320, 360, 390, 430 and 768 px. Browser acceptance is separate from physical-phone acceptance. That earlier alpha validation was local and was not published as a separate npm release.
+- The `0.2.1-rc.2` browser pass also verified explicit composer taps, hidden duplicate mobile dock metrics, and a desktop-generated QR opening the same selected chat in a fresh mobile browser context. Browser JavaScript errors: none. Test devices were revoked after the checks; screenshots from the private working profile are local evidence, not README assets.
+- The Settings shortcut passed live browser checks in both EN and ZH with expanded and collapsed sidebars. Seven regression tests cover current menu navigation, historical direct triggers, already-open surfaces, absent launchers, bounded waits, and rejection of unrelated statistics triggers. Screenshot QA covered both locales at `320 × 568`, `360 × 800`, `390 × 844`, `430 × 932` and `768 × 1024`.
+
 ## 1.2.3 — 2026-10-02
 
 ### Changed

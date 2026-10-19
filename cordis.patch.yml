@@ -3,9 +3,9 @@
 # LAN authorities through its public trustedHosts contract. Harness still keeps
 # settings, credentials, native Host actions, and preset authoring loopback-only.
 - id: connection
-  inject: [webRuntime, localLinkGateway]
+  inject: [localLinkGateway]
   config:
-    trustedHosts: !!js "[...ctx.webRuntime.trustedHosts, ...ctx.localLinkGateway.trustedHosts]"
+    trustedHosts: !!js "[...(ctx.root.webStartup?.trustedHosts ?? ctx.root.webRuntime?.trustedHosts ?? []), ...ctx.localLinkGateway.trustedHosts]"
 
 - insert:
     - id: dsh-local-link

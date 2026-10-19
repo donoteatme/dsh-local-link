@@ -6,6 +6,7 @@ import {
   MOBILE_STOCK_LAYOUT_STYLES,
   MobileComposerAutofocusGuard,
   applyResponsiveMobileEnhancements,
+  observeMobileComposerSession,
   shouldCloseMobileSidebarForElement,
 } from '../src/mobile-layout.js'
 import { installResponsiveMobileLayout, MOBILE_VIEW_MEDIA_QUERY } from '../src/client.js'
@@ -250,6 +251,20 @@ describe('mobile root composition', () => {
     const guard = new MobileComposerAutofocusGuard('session-a')
     expect(guard.selectionChanged('session-a')).toBe(false)
     expect(guard.shouldBlur(new EventTarget(), 1_000)).toBe(false)
+  })
+
+  it('arms autofocus suppression from the rendered Session scope without catalog current selection', () => {
+    const guard = new MobileComposerAutofocusGuard(undefined)
+    const input = new EventTarget()
+    let blurs = 0
+    const dispose = observeMobileComposerSession(guard, 'session-a', () => ({ blur: () => { blurs++ } }))
+    expect(blurs).toBe(1)
+    expect(guard.shouldBlur(input, 1_000)).toBe(true)
+    guard.pointerDown(input, 1_010)
+    expect(guard.shouldBlur(input, 1_011)).toBe(false)
+    dispose()
+    observeMobileComposerSession(guard, 'session-b', () => null)
+    expect(guard.shouldBlur(input, 2_000)).toBe(true)
   })
 
   it('keeps the drawer open for native session actions and closes it for row selection', () => {

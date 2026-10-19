@@ -31,6 +31,8 @@ function compositionHarness(): {
     register({ name: 'conversation.session.header.actions', id: 'agent-preset' }, () => null),
     register({ name: 'conversation.session.header.utilities', id: 'session-log-download' }, () => null),
     register({ name: 'conversation.composer.dock', id: 'stats' }, () => null),
+    register({ name: 'conversation.composer.dock', id: 'activity' }, () => null),
+    register({ name: 'conversation.composer.dock', id: 'usage' }, () => null),
   ]
   const mobileDisposers: Array<() => void> = []
   const context = {
@@ -87,7 +89,7 @@ describe('native Harness mobile composition', () => {
     expect(harness.core.entries('conversation.session.header.lineage')).toHaveLength(2)
     expect(harness.core.entries('conversation.session.header.actions')).toHaveLength(2)
     expect(harness.core.entries('conversation.session.header.utilities')).toHaveLength(3)
-    expect(harness.core.entries('conversation.composer.dock')).toHaveLength(2)
+    expect(harness.core.entries('conversation.composer.dock')).toHaveLength(6)
 
     harness.disposeMobile()
     expect(harness.core.entries('shell.overlay')).toHaveLength(0)
@@ -95,7 +97,7 @@ describe('native Harness mobile composition', () => {
     expect(harness.core.entries('conversation.session.header.lineage')).toHaveLength(1)
     expect(harness.core.entries('conversation.session.header.actions')).toHaveLength(1)
     expect(harness.core.entries('conversation.session.header.utilities')).toHaveLength(1)
-    expect(harness.core.entries('conversation.composer.dock')).toHaveLength(1)
+    expect(harness.core.entries('conversation.composer.dock')).toHaveLength(3)
     harness.disposeStock()
   })
 

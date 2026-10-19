@@ -47,7 +47,7 @@ describe('release contract', () => {
     expect(metadata.files).toContain('README.md')
     expect(metadata.files).toContain('README.ru.md')
     expect(metadata.files).toContain('README.zh.md')
-    expect(cordisPatch).toContain('trustedHosts: !!js "[...ctx.webRuntime.trustedHosts, ...ctx.localLinkGateway.trustedHosts]"')
+    expect(cordisPatch).toContain('trustedHosts: !!js "[...(ctx.root.webStartup?.trustedHosts ?? ctx.root.webRuntime?.trustedHosts ?? []), ...ctx.localLinkGateway.trustedHosts]"')
     expect(cordisPatch).not.toMatch(/!!js\s+[\[{]/u)
 
     const images = [...readme.matchAll(/src="(docs\/images\/[^"]+)"/gu)].map(match => match[1])
@@ -58,7 +58,7 @@ describe('release contract', () => {
     expect(russianImages).toEqual(images)
 
     const chineseImages = [...readmeZh.matchAll(/src="(docs\/images\/[^"]+)"/gu)].map(match => match[1])
-    expect(chineseImages).toEqual(images.map(image => image?.replace('.png', '.zh.png')))
+    expect(chineseImages).toEqual(images.map(image => image?.replace(/(\.(?:png|jpg))$/u, '.zh$1')))
     await Promise.all(chineseImages.map(async image => access(resolve(root, image ?? 'missing'))))
 
     const localLinks = [readme, readmeRu, readmeZh]

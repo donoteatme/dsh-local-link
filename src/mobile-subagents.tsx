@@ -251,7 +251,9 @@ function CatalogRows({ actions, catalogs, expanded, level, onOpen, onToggle, par
       const address: SubagentAddress = {
         parentSessionId,
         childSessionId: entry.id,
-        mode: entry.mode,
+        // External entries are not a resumable legacy child-session mode.
+        // Current Harness owns their navigation; this sheet is legacy-only.
+        mode: entry.mode === 'external' ? 'unknown' : entry.mode,
       }
       return <React.Fragment key={entry.id}>
         <div className="dllm-subagent-row" role="treeitem" aria-expanded={entry.hasChildren ? open : undefined} style={{ '--dllm-level': level } as React.CSSProperties}>

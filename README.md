@@ -13,7 +13,7 @@ Use the same [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness)
 
 Open `Local access`, scan the QR code, and the paired browser arrives at the desktop's currently selected Harness session with the same live conversation, permissions, workspaces, and plugin surfaces.
 
-The `1.2.x` line supports DeepSeek Harness `0.1.5-rc.2`, `0.1.7-rc.2`, `0.2.0-rc.2`, and `0.2.1-rc.2` and keeps the stock Web client usable on narrow touch screens. It reorganizes the existing Harness interface into responsive drawers, compact session controls, and touch-friendly actions while keeping the same client, session, plugin slots, permissions, and live agent stream.
+The `1.2.x` line supports DeepSeek Harness `0.1.5-rc.2`, `0.1.7-rc.2`, `0.2.0-rc.2`, and `0.2.1-rc.2` / `0.2.1-rc.5` and keeps the stock Web client usable on narrow touch screens. It reorganizes the existing Harness interface into responsive drawers, compact session controls, and touch-friendly actions while keeping the same client, session, plugin slots, permissions, and live agent stream.
 
 > **Security boundary:** the gateway uses plain HTTP and is intended only for a trusted private network. Do not expose its port to the internet or use it on public Wi-Fi.
 
@@ -73,11 +73,11 @@ The profile points at the checkout, so rebuild after changing client code and re
 
 ## Compatibility
 
-Local Link `1.2.4` is built and checked against DeepSeek Harness `0.2.1-rc.2`. It supports `webStartup` trusted-host configuration with the older `webRuntime` fallback. QR Session identity and mobile autofocus use public Session scopes; the Paired devices shortcut follows the current native Settings launcher.
+Local Link `1.2.5` is built and checked against DeepSeek Harness `0.2.1-rc.5`. It supports `webStartup` trusted-host configuration with the older `webRuntime` fallback. QR Session identity and mobile autofocus use public Session scopes; the Paired devices shortcut follows the current native Settings launcher.
 
 The installable DeepSeek Harness range is declared in `package.json` through `engines.dsh`. Compatibility is checked against exact releases—not inferred from a successful installation or a moving dist-tag.
 
-Acceptance on `0.2.1-rc.2` covers LAN pairing, selected-chat QR handoff, authenticated HTTP/WebSocket access, immediate socket closure on revoke, loopback-only directory RPC restrictions, and mobile layouts at 320–768 CSS pixels in EN and ZH. Earlier Host declarations retain the historical acceptance recorded in the [changelog](CHANGELOG.md); the full old-version matrix and physical-phone checks were not rerun. Mobile microphone capture over plain LAN HTTP remains unsupported; this release adds neither HTTPS nor voice input.
+Acceptance on `0.2.1-rc.5` covers LAN pairing, selected-chat QR handoff, authenticated HTTP/WebSocket access, immediate socket closure on revoke, loopback-only directory RPC restrictions, and mobile layouts at 320–768 CSS pixels in EN and ZH. Earlier Host declarations retain the historical acceptance recorded in the [changelog](CHANGELOG.md); the full old-version matrix and physical-phone checks were not rerun. Mobile microphone capture over plain LAN HTTP remains unsupported; this release adds neither HTTPS nor voice input.
 
 ## Use
 
@@ -88,7 +88,7 @@ Acceptance on `0.2.1-rc.2` covers LAN pairing, selected-chat QR handoff, authent
 3. Scan the QR code or copy the one-time link to another device on the same network.
 4. The first browser to use the invitation opens the stock Harness client at the selected session. Host-level administration that Harness reserves for loopback remains unavailable remotely.
 
-The invitation is one-use, expires after five minutes by default, and is replaced immediately when `Generate another code` is selected.
+The invitation is one-use, expires after five minutes by default, and is replaced immediately when `Generate another code` is selected. After successful pairing, the QR panel closes automatically. Reopen `Local access` to generate a fresh invitation for another browser or device.
 
 Phone and tablet browsers automatically receive Mobile View when the viewport is at most 834 CSS pixels wide. The same responsive behavior can be previewed with browser device emulation; no URL parameter, user-agent switch, or second client is involved.
 
@@ -119,11 +119,11 @@ The implementation changes presentation, not Harness ownership or behavior:
 - plugin-owned modal drawers contain keyboard focus and return it to the invoking control when closed;
 - existing workspaces remain available, while the misleading remote `Add workspace` directory picker is omitted.
 
-These dark-theme previews were captured from real Harness `0.2.1-rc.2` browser sessions: mobile frames are `430 × 932`, desktop frames are `1440 × 1000`. The isolated profiles contain fictional workspaces, conversations, models, devices, and usage only. The Chinese README has its own Simplified Chinese captures; Russian documentation shares the English images. Subagents use the native Harness header catalog.
+These dark-theme previews were captured from real Harness `0.2.1-rc.5` browser sessions: mobile frames are `430 × 932`, desktop frames are `1440 × 1000`. The isolated profiles contain fictional workspaces, conversations, models, devices, and usage only. The Chinese README has its own Simplified Chinese captures; Russian documentation shares the English images. Subagents use the native Harness header catalog.
 
 | Navigation | Current session | Subagents | Conversation |
 | :---: | :---: | :---: | :---: |
-| <img src="docs/images/mobile-navigation.jpg" width="210" alt="Dark Mobile View navigation drawer with a synthetic workspace and session"> | <img src="docs/images/mobile-session-info.jpg" width="210" alt="Dark Mobile View Current session drawer with synthetic model, workspace access, statistics, and session log data"> | <img src="docs/images/mobile-subagents.jpg" width="210" alt="Native dark Harness header catalog with two synthetic child agents"> | <img src="docs/images/mobile-chat.jpg" width="210" alt="Dark Mobile View Harness conversation with native message actions and one-line composer controls"> |
+| <img src="docs/images/mobile-navigation.png" width="210" alt="Dark Mobile View navigation drawer with a synthetic workspace and session"> | <img src="docs/images/mobile-session-info.png" width="210" alt="Dark Mobile View Current session drawer with synthetic model, workspace access, statistics, and session log data"> | <img src="docs/images/mobile-subagents.png" width="210" alt="Native dark Harness header catalog with two synthetic child agents"> | <img src="docs/images/mobile-chat.png" width="210" alt="Dark Mobile View Harness conversation with native message actions and one-line composer controls"> |
 
 ### Permissions
 

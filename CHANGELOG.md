@@ -2,6 +2,20 @@
 
 All notable changes to this project are documented here.
 
+## 1.2.5 — 2026-10-30
+
+### Changed
+
+- Updated the exact development contracts to DeepSeek Harness `0.2.1-rc.5`, verified as npm `latest` on 2026-10-30, and added that exact Host version to `engines.dsh` and the matching Host peer range. Historical declarations remain unchanged.
+- Refreshed English, Russian and Simplified Chinese compatibility documentation and replaced all 14 README screenshots with approved, real-browser dark-theme captures on `0.2.1-rc.5`: eight mobile PNG originals at `430 × 932` and six desktop JPEG originals at `1440 × 1000`, without re-encoding. English and Simplified Chinese use separate fictional demo profiles; Russian documentation shares the English images.
+- Clarified the existing one-use invitation lifecycle in all three READMEs: successful pairing closes the QR panel, and another browser or device needs a newly generated invitation.
+
+### Validation
+
+- Typecheck, all 117 tests across 18 files, build, package dry-run and production dependency audit passed against `0.2.1-rc.5`. Live pairing returned `204`, authentication handoff `303` / `303`, root `200`, and WebSocket upgrade `101`; revoke immediately closed the active socket and subsequent access returned `401`. All three directory-picker RPCs remained blocked with `403`.
+- Browser QA passed EN/ZH at five viewport sizes from 320 to 768 CSS pixels, plus selected-chat QR entry and fully opened navigation/session/subagent surfaces at 320 and 430 px. The Paired devices shortcut passed both locales with expanded and collapsed sidebars; browser JavaScript errors: none. Physical-phone, voice and the full historical Host matrix were not rerun.
+- Rechecked all three native More menu locations, Copy link, invitation replacement (old token `410`), QR auto-close after consumption, selected-chat handoff, device rename/revoke, and diagnostic refresh/copy/clear in three repeated EN/ZH passes. Remote administration remained unavailable (`404`), and Settings/directory-picker RPCs remained blocked (`403`). Six new connection-screen captures were compared with the existing README images: Local Link controls are unchanged; native More entries are the visible Host-shell difference.
+
 ## 1.2.4 — 2026-10-19
 
 ### Changed

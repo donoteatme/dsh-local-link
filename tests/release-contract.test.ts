@@ -61,6 +61,12 @@ describe('release contract', () => {
     expect(chineseImages).toEqual(images.map(image => image?.replace(/(\.(?:png|jpg))$/u, '.zh$1')))
     await Promise.all(chineseImages.map(async image => access(resolve(root, image ?? 'missing'))))
 
+    const screenshotHosts = [readme, readmeRu, readmeZh].map(source => source.split(/\r?\n/u)
+      .find(line => line.includes('430 × 932') && line.includes('1440 × 1000'))
+      ?.match(/`(\d+\.\d+\.\d+[^`]*)`/u)?.[1])
+    expect(screenshotHosts[0]).toBeTruthy()
+    expect(screenshotHosts).toEqual([screenshotHosts[0], screenshotHosts[0], screenshotHosts[0]])
+
     const localLinks = [readme, readmeRu, readmeZh]
       .flatMap(source => [...source.matchAll(/\]\((?!https?:|#)([^)#]+)(?:#[^)]+)?\)/gu)])
       .map(match => match[1])

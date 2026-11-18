@@ -14,14 +14,14 @@ Presentation remains independent of authorization: changing the viewport never g
 - **Existing sessions:** Search, View options, workspaces, sessions, rename, archive, and the active-workspace actions stay native Harness operations.
 - **Dynamic views:** Chat, Trajectory, composer extensions, overlays, and third-party conversation tabs continue to resolve from Harness plugin slots.
 - **Current session:** a right drawer shows context usage and its System prompt / Tools / Messages breakdown, model, workspace access, agent preset, activity statistics, and session-log download.
-- **Mobile-only simplification:** the duplicate stock context meter below the conversation and the Host-app opener (Explorer/VS Code/Rider) are hidden on mobile, but remain visible on desktop.
+- **Mobile-only simplification:** the duplicate stock context meter below the conversation and the Host-app opener (Explorer/VS Code/Rider) are hidden on mobile. The context meter remains visible on desktop; native app launching is available only on the loopback desktop.
 - **Subagents:** on 0.1.5, a compact status chip opens the nested catalog as a touch-friendly bottom sheet. On 0.1.7 and 0.2, Harness's native header action owns the catalog and navigation.
 - **Appearance:** a sun/moon action uses the Harness theme service. Remote theme selection remains page-scoped, so reload returns to the host preference and resolves `system` against the phone or tablet.
 - **Touch behavior:** native session and active-workspace overflow actions remain visible without a long press, and switching sessions does not automatically focus the composer or open the software keyboard.
 - **Keyboard accessibility:** plugin-owned modal drawers receive and contain focus, close with Escape, and restore focus to their invoking control.
 - **Responsive AppFrame:** safe-area insets, full-viewport scrims, scrollable tab groups, media bounds, and matching left/right drawers enhance the shipped Harness layout only while the media query matches.
 
-The remote boot deliberately omits the host directory-picker capability. Existing workspaces remain available, but `Add workspace` is not shown because selecting a directory on the Harness computer from a remote phone is misleading.
+The remote boot deliberately omits Host directory-picker and native-app-launcher capabilities. Existing workspaces remain available, but `Add workspace` is not shown because selecting a directory on the Harness computer from a remote phone is misleading. The gateway also blocks the corresponding Host-only routes.
 
 ## Permissions
 
@@ -53,6 +53,8 @@ Landscape phones, split-screen browsers, virtual keyboards, third-party fixed-wi
 Mobile View keeps the official Harness root and AppFrame mounted. It contributes controls through overlay, conversation, theme, session, locale, button, and input contracts wherever Harness exposes them. The stock desktop presentation is unchanged when the media query does not match.
 
 The supported Harness builds do not expose a complete public responsive shell, drawer recipe, or spacing/radius scale. The plugin therefore owns mobile geometry and a small number of scoped presentation adapters for stock brand, workspace, session-action, and feedback elements. Its icon adapter accepts both 0.1.7 weight-named and older size-named exports. These hooks are documented in [Architecture and compatibility boundaries](ARCHITECTURE.md) and must be retested for each supported Harness version.
+
+On `0.2.2`, AppFrame columns are identified by their semantic sidebar/main slots rather than child positions. The adapter hides the duplicate native mobile mask and leading control and rechecks whether navigation already closed the sidebar before closing it itself.
 
 ## Security
 

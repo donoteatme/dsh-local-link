@@ -144,7 +144,20 @@ export function supportedWebSocketTarget(target: URL): boolean {
 export function isLoopbackOnlyRpcTarget(target: URL): boolean {
   if (!target.pathname.startsWith('/api/')) return false
   try {
-    return LOOPBACK_ONLY_RPC_METHODS.has(decodeURIComponent(target.pathname.slice('/api/'.length)))
+    // 0.2.2 Typert endpoints use namespace/method; older Hosts use namespace.method.
+    const method = decodeURIComponent(target.pathname.slice('/api/'.length))
+      .replaceAll('/', '.')
+      .replace(/^agentPresets\./u, 'agentPreset.')
+    return LOOPBACK_ONLY_RPC_METHODS.has(method)
+  } catch {
+    return true
+  }
+}
+
+export function isLoopbackOnlyNativeTarget(target: URL): boolean {
+  try {
+    const pathname = decodeURIComponent(target.pathname)
+    return pathname === '/open-in-app' || pathname.startsWith('/open-in-app/')
   } catch {
     return true
   }
@@ -353,7 +366,7 @@ export class LocalGateway {
       }
       return
     }
-    if (isLoopbackOnlyRpcTarget(url)) {
+    if (isLoopbackOnlyRpcTarget(url) || isLoopbackOnlyNativeTarget(url)) {
       void this.diagnostics.record('warn', 'REQUEST_REJECTED', { reason: 'loopback_only_rpc' })
       send(response, 403, 'This DeepSeek Harness action is available only on the host computer.')
       return

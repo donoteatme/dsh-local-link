@@ -155,6 +155,15 @@ export function shouldCloseMobileSidebarForElement(target: Pick<Element, 'closes
   return item !== null && item.getAttribute('aria-expanded') === null
 }
 
+/** Let the Host finish native row navigation before deciding whether to close. */
+export function scheduleMobileSidebarClose(
+  isOpen: () => boolean,
+  toggle: () => void,
+  schedule: (callback: () => void) => void,
+): void {
+  schedule(() => { if (isOpen()) toggle() })
+}
+
 
 export function MobileThemeToggle({ controller, useDarkLabel, useLightLabel }: MobileThemeToggleProps): React.JSX.Element {
   const snapshot = useSyncExternalStore(controller.subscribe, controller.getSnapshot)
@@ -199,12 +208,13 @@ function StockMobileControls({ layout, labels, themeController, useDarkLabel, us
 
 export const MOBILE_STOCK_LAYOUT_STYLES = `
 body[data-dsh-local-link-mobile]{overflow:hidden}
-body[data-dsh-local-link-mobile] #root>[data-slot="root"]>div:has(>[data-shell-overlay]){--dllm-side-drawer-width:min(88vw,340px);--dllm-side-drawer-closed-transform:translateX(calc(-1 * var(--dllm-side-drawer-width) - 14px));grid-template-columns:minmax(0,1fr)!important}
-body[data-dsh-local-link-mobile] #root>[data-slot="root"]>div:has(>[data-shell-overlay])>:first-child{position:fixed;z-index:70;inset:0 auto 0 0;box-sizing:border-box;width:var(--dllm-side-drawer-width);transform:translateX(0);transition:transform 190ms cubic-bezier(.22,1,.36,1);box-shadow:18px 0 46px rgb(15 23 42 / 18%)}
-body[data-dsh-local-link-mobile] #root>[data-slot="root"]>div:has(>[data-shell-overlay])>:first-child>[data-slot="sidebar"]>*{width:100%!important;height:100%!important}
+body[data-dsh-local-link-mobile] [data-sidebar-mask],body[data-dsh-local-link-mobile] [data-slot="shell.leading"]{display:none!important}
+body[data-dsh-local-link-mobile] #root>[data-slot="root"]>div:has(>[data-shell-overlay]){--dsh-frame-leading-clearance:0px;--dllm-side-drawer-width:min(88vw,340px);--dllm-side-drawer-closed-transform:translateX(calc(-1 * var(--dllm-side-drawer-width) - 14px));grid-template-columns:minmax(0,1fr)!important}
+body[data-dsh-local-link-mobile] #root>[data-slot="root"]>div:has(>[data-shell-overlay])>div:has(>[data-slot="sidebar"]){position:fixed;z-index:70;inset:0 auto 0 0;box-sizing:border-box;width:var(--dllm-side-drawer-width)!important;transform:translateX(0);transition:transform 190ms cubic-bezier(.22,1,.36,1);box-shadow:18px 0 46px rgb(15 23 42 / 18%)}
+body[data-dsh-local-link-mobile] #root>[data-slot="root"]>div:has(>[data-shell-overlay])>div:has(>[data-slot="sidebar"])>[data-slot="sidebar"]>*{width:100%!important;height:100%!important}
 body[data-dsh-local-link-mobile] [data-slot="sidebar"] button[class*="_brand"]{flex:0 0 auto!important;inline-size:max-content!important;width:max-content!important;min-width:0!important;max-width:calc(100% - 72px)!important;margin-right:auto!important}
-body[data-dsh-local-link-mobile] #root>[data-slot="root"]>div[data-sidebar-collapsed]:has(>[data-shell-overlay])>:first-child{transform:var(--dllm-side-drawer-closed-transform);pointer-events:none}
-body[data-dsh-local-link-mobile] #root>[data-slot="root"]>div:has(>[data-shell-overlay])>:nth-child(2){grid-column:1;grid-row:1;min-width:0}
+body[data-dsh-local-link-mobile] #root>[data-slot="root"]>div[data-sidebar-collapsed]:has(>[data-shell-overlay])>div:has(>[data-slot="sidebar"]){transform:var(--dllm-side-drawer-closed-transform);pointer-events:none}
+body[data-dsh-local-link-mobile] #root>[data-slot="root"]>div:has(>[data-shell-overlay])>div:has([data-slot="main"]){grid-column:1;grid-row:1;min-width:0}
 body[data-dsh-local-link-mobile] #root>[data-slot="root"]>div:has(>[data-shell-overlay])>[data-rightbar-col]{position:absolute!important;inset:0 0 auto auto!important;display:block!important;width:0!important;height:0!important;overflow:visible!important}
 body[data-dsh-local-link-mobile] [data-rightbar-col] [data-sidebar-right-panel]{position:fixed!important;inset:0!important;z-index:100!important;width:100%!important;border:0!important}
 body[data-dsh-local-link-mobile] #root>[data-slot="root"]>div:has(>[data-shell-overlay])>[data-side]{display:none!important}
@@ -242,7 +252,7 @@ body[data-dsh-local-link-mobile] [data-turn-tail]>div:last-child>button[aria-has
 body[data-dsh-local-link-mobile] [data-turn-tail]>div:last-child>button[aria-haspopup=dialog][aria-expanded]::before{content:"";display:block;width:16px;height:16px;background:currentColor;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='black' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M10.8 2.4a1.7 1.7 0 0 1 2.4 2.4L6 12l-3 .6.6-3 7.2-7.2Z'/%3E%3Cpath d='m9.8 3.4 2.8 2.8'/%3E%3C/svg%3E") center/16px 16px no-repeat}
 body[data-dsh-local-link-mobile] [data-cordis-panel]{left:max(12px,env(safe-area-inset-left))!important;right:max(12px,env(safe-area-inset-right))!important;bottom:max(12px,env(safe-area-inset-bottom))!important;width:auto!important;max-width:none!important;max-height:calc(100dvh - max(24px,env(safe-area-inset-top) + env(safe-area-inset-bottom)))!important}
 body[data-dsh-local-link-mobile] [data-cordis-row]{min-width:0}body[data-dsh-local-link-mobile] [data-cordis-row]>div{min-width:0;flex-wrap:wrap}body[data-dsh-local-link-mobile] [data-cordis-row] span{max-width:100%;white-space:normal;overflow-wrap:anywhere;text-overflow:clip}
-@media(prefers-reduced-motion:reduce){body[data-dsh-local-link-mobile] #root>[data-slot="root"]>div:has(>[data-shell-overlay])>:first-child,.dllm-stock-theme{transition:none!important}}
+@media(prefers-reduced-motion:reduce){body[data-dsh-local-link-mobile] #root>[data-slot="root"]>div:has(>[data-shell-overlay])>div:has(>[data-slot="sidebar"]),.dllm-stock-theme{transition:none!important}}
 ${MOBILE_SUBAGENT_STYLES}
 ${MOBILE_SESSION_INFO_STYLES}
 `
@@ -299,7 +309,11 @@ function applyResponsiveMobileEnhancementsBody(ctx: ClientContext): void {
       if (!(target instanceof Element) || !shouldCloseMobileSidebarForElement(target)) return
       const frame = document.querySelector('[data-shell-overlay]')?.parentElement
       if (frame?.hasAttribute('data-sidebar-collapsed') !== false) return
-      window.setTimeout(() => ctx.layout.toggleSidebar(), 0)
+      scheduleMobileSidebarClose(
+        () => frame.isConnected && !frame.hasAttribute('data-sidebar-collapsed'),
+        () => ctx.layout.toggleSidebar(),
+        callback => { window.setTimeout(callback, 0) },
+      )
     }
     document.addEventListener('click', onClick, true)
     return () => document.removeEventListener('click', onClick, true)

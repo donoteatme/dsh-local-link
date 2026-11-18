@@ -1,7 +1,8 @@
 const CLIENT_ID = 'dsh-local-link'
-const HOST_DIRECTORY_PICKER_IDS = new Set([
+const HOST_ONLY_CLIENT_IDS = new Set([
   '@deepseek-ai/dsh-client-ui-directory-picker-native',
   '@deepseek-ai/dsh-client-ui-directory-picker-browse',
+  '@deepseek-ai/dsh-client-ui-open-in-app',
 ])
 const RANDOM_UUID_POLYFILL = `if(!window.crypto.randomUUID){window.crypto.randomUUID=function(){const b=new Uint8Array(16);window.crypto.getRandomValues(b);b[6]=(b[6]&15)|64;b[8]=(b[8]&63)|128;const h=Array.from(b,value=>value.toString(16).padStart(2,'0'));return h.slice(0,4).join('')+'-'+h.slice(4,6).join('')+'-'+h.slice(6,8).join('')+'-'+h.slice(8,10).join('')+'-'+h.slice(10).join('')}};`
 
@@ -34,11 +35,11 @@ function ensureResponsiveViewport(html: string): string {
   return `${html.slice(0, match.index)}${replacement}${html.slice(match.index + match[0].length)}`
 }
 
-function removeHostDirectoryPickers(manifest: BootManifest, entries: BootEntry[]): void {
+function removeHostOnlyCapabilities(manifest: BootManifest, entries: BootEntry[]): void {
   const removed = new Set<string>()
   for (let index = entries.length - 1; index >= 0; index -= 1) {
     const id = String(entries[index]?.id)
-    if (!HOST_DIRECTORY_PICKER_IDS.has(id)) continue
+    if (!HOST_ONLY_CLIENT_IDS.has(id)) continue
     removed.add(id)
     entries.splice(index, 1)
   }
@@ -54,7 +55,7 @@ function removeHostDirectoryPickers(manifest: BootManifest, entries: BootEntry[]
 
 /**
  * Keep the shipped Harness root and every dynamic child slot. The gateway only
- * removes Host-side directory picker capabilities from remote browsers and
+ * removes Host-side directory picker and native app capabilities from remote browsers and
  * adds the secure-context polyfill required by the stock browser transport.
  */
 export function rewriteAuthenticatedIndex(html: string): string {
@@ -68,7 +69,7 @@ export function rewriteAuthenticatedIndex(html: string): string {
   if (!Array.isArray(manifest.entries)) throw new Error('DSH boot manifest has no entries')
   const entries = manifest.entries as BootEntry[]
   if (!entries.some(entry => entry.id === CLIENT_ID)) throw new Error('dsh-local-link client is absent from DSH boot manifest')
-  removeHostDirectoryPickers(manifest, entries)
+  removeHostOnlyCapabilities(manifest, entries)
 
   // Plain HTTP on a private IP is not a secure context. getRandomValues is
   // still available, so the stock browser RPC client can use an RFC 4122 v4

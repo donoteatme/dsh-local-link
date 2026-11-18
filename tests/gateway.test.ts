@@ -5,7 +5,7 @@ import { join } from 'node:path'
 import { tmpdir } from 'node:os'
 import { afterEach, describe, expect, it } from 'vitest'
 import type { ResolvedConfig } from '../src/config.js'
-import { isLoopbackOnlyRpcTarget, LocalGateway, supportedWebSocketTarget } from '../src/gateway/local-gateway.js'
+import { isLoopbackOnlyNativeTarget, isLoopbackOnlyRpcTarget, LocalGateway, supportedWebSocketTarget } from '../src/gateway/local-gateway.js'
 
 const cleanups: Array<() => Promise<void>> = []
 afterEach(async () => {
@@ -83,12 +83,33 @@ describe('LocalGateway', () => {
     expect(isLoopbackOnlyRpcTarget(new URL('/api/directoryPicker%2EcreateDirectory', 'http://gateway.test'))).toBe(true)
   })
 
+  it('keeps the same Host-only boundary for slash-based 0.2.2 endpoints and encoded aliases', () => {
+    for (const method of ['settings/describe', 'settings/update', 'settings/mutate', 'credentials/set', 'credentials/unset', 'directoryPicker/pick', 'directoryPicker/list', 'directoryPicker/createDirectory', 'agentPreset/openDocument', 'agentPresets/read', 'host/openPath']) {
+      expect(isLoopbackOnlyRpcTarget(new URL(`/api/${method}`, 'http://gateway.test'))).toBe(true)
+      expect(isLoopbackOnlyRpcTarget(new URL(`/api/${encodeURIComponent(method)}`, 'http://gateway.test'))).toBe(true)
+    }
+    for (const method of ['session/list', 'session/create', 'workspace/create', 'agentPreset/list', 'agentPreset/select', 'agentPresets/list', 'agentPresets/select']) {
+      expect(isLoopbackOnlyRpcTarget(new URL(`/api/${method}`, 'http://gateway.test'))).toBe(false)
+    }
+    expect(isLoopbackOnlyRpcTarget(new URL('/api/settings%ZZupdate', 'http://gateway.test'))).toBe(true)
+  })
+
   it('allows only the exact stock stream transports used by supported Harness versions', () => {
     expect(supportedWebSocketTarget(new URL('http://gateway.test/api/events.mux'))).toBe(true)
     expect(supportedWebSocketTarget(new URL('http://gateway.test/api/events.host'))).toBe(true)
     expect(supportedWebSocketTarget(new URL('http://gateway.test/api/remote.mux'))).toBe(true)
     expect(supportedWebSocketTarget(new URL('http://gateway.test/api/remote.mux?token=bad'))).toBe(false)
     expect(supportedWebSocketTarget(new URL('http://gateway.test/api/arbitrary'))).toBe(false)
+  })
+
+  it('keeps native app discovery, icons, and launch routes on the host computer', () => {
+    for (const path of ['/open-in-app', '/open-in-app/apps', '/open-in-app/icon/code', '/open-in-app/open', '/open-in-app%2Fopen', '/%6Fpen-in-app/apps']) {
+      expect(isLoopbackOnlyNativeTarget(new URL(path, 'http://gateway.test'))).toBe(true)
+    }
+    for (const path of ['/', '/plugins/open-in-app/client.js', '/open-in-application', '/api/session/create']) {
+      expect(isLoopbackOnlyNativeTarget(new URL(path, 'http://gateway.test'))).toBe(false)
+    }
+    expect(isLoopbackOnlyNativeTarget(new URL('/open-in-app/%ZZ', 'http://gateway.test'))).toBe(true)
   })
 
   it('pairs once, protects the root, and proxies an authenticated browser', async () => {
@@ -199,14 +220,20 @@ describe('LocalGateway', () => {
     expect(observedHeaders?.cookie).toBeUndefined()
     expect(gateway.trustedAuthorities()).toEqual([`127.0.0.1:${gatewayPort}`])
 
-    for (const method of ['settings.describe', 'directoryPicker.pick', 'directoryPicker.list', 'directoryPicker.createDirectory']) {
+    for (const method of ['settings.describe', 'directoryPicker.pick', 'directoryPicker.list', 'directoryPicker.createDirectory', 'settings/describe', 'settings/update', 'credentials/set', 'directoryPicker/pick', 'directoryPicker/list', 'directoryPicker/createDirectory', 'settings%2Fmutate', 'agentPresets/read']) {
       const blocked = await fetch(`${origin}/api/${method}`, {
         method: 'POST', headers: { cookie: cookie ?? '', 'content-type': 'application/json' }, body: '{}',
       })
       expect(blocked.status).toBe(403)
       expect(await blocked.text()).toContain('only on the host computer')
     }
-
+    for (const path of ['/open-in-app/apps', '/open-in-app/icon/code', '/open-in-app/open']) {
+      const blocked = await fetch(`${origin}${path}`, {
+        method: path.endsWith('/open') ? 'POST' : 'GET', headers: { cookie: cookie ?? '' },
+      })
+      expect(blocked.status).toBe(403)
+      expect(await blocked.text()).toContain('only on the host computer')
+    }
   })
 
   it('uses the native Harness browser-authentication handoff without forwarding its device cookie', async () => {

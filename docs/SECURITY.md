@@ -29,6 +29,7 @@ Mobile View does not reduce that authority. It inherits the selected Harness ses
 - Structural loopback source, Host, and Origin validation for every desktop administration request; lookalike DNS names fail closed.
 - Gateway authorities declared through the stock connection `trustedHosts` contract without claiming loopback identity.
 - Gateway enforcement that keeps Settings, credentials, native Host actions, and agent-preset authoring outside both Local Link access modes even though the RC connection transport authenticates methods uniformly.
+- The same Host-only boundary applies to legacy dotted API names, current slash-separated endpoints (including `agentPresets/read`), and `/open-in-app` discovery/icon/launch routes. The remote boot omits directory-picker and native-app-launcher UI entries; hiding those entries supplements the server-side restrictions.
 - Bounded local diagnostics with an explicit context allowlist and no credentials, addresses, identifiers, names, paths, or user content.
 - No external relay, telemetry, analytics, or remote log collector.
 

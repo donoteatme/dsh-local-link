@@ -8,6 +8,7 @@ import {
   applyResponsiveMobileEnhancements,
   observeMobileComposerSession,
   shouldCloseMobileSidebarForElement,
+  scheduleMobileSidebarClose,
 } from '../src/mobile-layout.js'
 import { installResponsiveMobileLayout, MOBILE_VIEW_MEDIA_QUERY } from '../src/client.js'
 
@@ -131,6 +132,12 @@ describe('mobile root composition', () => {
     expect(MOBILE_STOCK_LAYOUT_STYLES).toContain('--dllm-side-drawer-width:min(88vw,340px)')
     expect(MOBILE_STOCK_LAYOUT_STYLES).toContain('--dllm-side-drawer-closed-transform:translateX(')
     expect(MOBILE_STOCK_LAYOUT_STYLES).toContain('grid-template-columns:minmax(0,1fr)!important')
+    expect(MOBILE_STOCK_LAYOUT_STYLES).toContain('>div:has(>[data-slot="sidebar"])')
+    expect(MOBILE_STOCK_LAYOUT_STYLES).toContain('>div:has([data-slot="main"])')
+    expect(MOBILE_STOCK_LAYOUT_STYLES).not.toContain('>:first-child')
+    expect(MOBILE_STOCK_LAYOUT_STYLES).not.toContain('>:nth-child(2)')
+    expect(MOBILE_STOCK_LAYOUT_STYLES).toContain('[data-sidebar-mask]')
+    expect(MOBILE_STOCK_LAYOUT_STYLES).toContain('[data-slot="shell.leading"]')
     expect(MOBILE_STOCK_LAYOUT_STYLES).toContain('transform:var(--dllm-side-drawer-closed-transform)')
     expect(MOBILE_STOCK_LAYOUT_STYLES).toContain('padding-left:max(48px')
     expect(MOBILE_STOCK_LAYOUT_STYLES).toContain('padding-right:max(8px,env(safe-area-inset-right))')
@@ -281,5 +288,21 @@ describe('mobile root composition', () => {
     expect(shouldCloseMobileSidebarForElement(target(false, true))).toBe(true)
     expect(shouldCloseMobileSidebarForElement(target(false, true, 'false'))).toBe(false)
     expect(shouldCloseMobileSidebarForElement(target(false, false))).toBe(false)
+  })
+
+  it('does not reopen a drawer already closed by native row navigation', () => {
+    let open = true
+    let toggles = 0
+    let queued: (() => void) | undefined
+    const toggle = () => { open = !open; toggles++ }
+    scheduleMobileSidebarClose(() => open, toggle, callback => { queued = callback })
+    open = false
+    queued?.()
+    expect(toggles).toBe(0)
+    open = true
+    scheduleMobileSidebarClose(() => open, toggle, callback => { queued = callback })
+    queued?.()
+    expect(open).toBe(false)
+    expect(toggles).toBe(1)
   })
 })

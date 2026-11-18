@@ -13,7 +13,7 @@ Use the same [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness)
 
 Open `Local access`, scan the QR code, and the paired browser arrives at the desktop's currently selected Harness session with the same live conversation, permissions, workspaces, and plugin surfaces.
 
-The `1.2.x` line supports DeepSeek Harness `0.1.5-rc.2`, `0.1.7-rc.2`, `0.2.0-rc.2`, and `0.2.1-rc.2` / `0.2.1-rc.5` and keeps the stock Web client usable on narrow touch screens. It reorganizes the existing Harness interface into responsive drawers, compact session controls, and touch-friendly actions while keeping the same client, session, plugin slots, permissions, and live agent stream.
+The `1.2.x` line supports DeepSeek Harness `0.2.2-rc.1` and the earlier Hosts declared in `engines.dsh`. It reorganizes the stock Web interface into responsive drawers, compact session controls, and touch-friendly actions while keeping the same client, session, plugin slots, permissions, and live agent stream.
 
 > **Security boundary:** the gateway uses plain HTTP and is intended only for a trusted private network. Do not expose its port to the internet or use it on public Wi-Fi.
 
@@ -58,7 +58,7 @@ dsh web
 
 ### Git clone — development checkout
 
-Requirements: Git, Node.js 22.19+ or 24+, Corepack, and a global `dsh` installation compatible with the package's declared `engines.dsh` range.
+Requirements for this checkout: Git, Node.js 24.9+, Corepack, and a global `dsh` installation compatible with the package's declared `engines.dsh` range. Harness `0.2.2` requires Node.js 24.9+; the plugin retains its Node.js 22.19 baseline for older declared Hosts.
 
 ```shell
 git clone https://github.com/donoteatme/dsh-local-link.git
@@ -73,11 +73,11 @@ The profile points at the checkout, so rebuild after changing client code and re
 
 ## Compatibility
 
-Local Link `1.2.5` is built and checked against DeepSeek Harness `0.2.1-rc.5`. It supports `webStartup` trusted-host configuration with the older `webRuntime` fallback. QR Session identity and mobile autofocus use public Session scopes; the Paired devices shortcut follows the current native Settings launcher.
+Local Link `1.2.6` is built and checked against DeepSeek Harness `0.2.2-rc.1`. Its mobile adapter supports the native sidebar mask and navigation lifecycle. The gateway recognizes both legacy dotted and current slash-based API names, while native app launching and Host administration remain available only on the Harness computer. Existing `webStartup` / `webRuntime`, public Session scopes, and native Settings navigation integrations are retained.
 
 The installable DeepSeek Harness range is declared in `package.json` through `engines.dsh`. Compatibility is checked against exact releases—not inferred from a successful installation or a moving dist-tag.
 
-Acceptance on `0.2.1-rc.5` covers LAN pairing, selected-chat QR handoff, authenticated HTTP/WebSocket access, immediate socket closure on revoke, loopback-only directory RPC restrictions, and mobile layouts at 320–768 CSS pixels in EN and ZH. Earlier Host declarations retain the historical acceptance recorded in the [changelog](CHANGELOG.md); the full old-version matrix and physical-phone checks were not rerun. Mobile microphone capture over plain LAN HTTP remains unsupported; this release adds neither HTTPS nor voice input.
+Acceptance on `0.2.2-rc.1` covers LAN pairing, selected-chat QR handoff, authenticated HTTP/WebSocket access, immediate socket closure on revoke, Host-only API and native-app restrictions, and mobile layouts at 320–768 CSS pixels in EN and ZH. Earlier Host declarations retain the historical acceptance recorded in the [changelog](CHANGELOG.md); the full old-version matrix and physical-phone checks were not rerun. Mobile microphone capture over plain LAN HTTP remains unsupported; this release adds neither HTTPS nor voice input.
 
 ## Use
 
@@ -110,7 +110,7 @@ The implementation changes presentation, not Harness ownership or behavior:
 - the native workspace/session browser becomes a left drawer;
 - dynamic Chat, Trajectory, composer, overlay, and third-party plugin slots remain intact;
 - Current session opens from the header with context breakdown, model, workspace access, preset, activity, and session-log download;
-- on mobile, the duplicate stock context meter below the chat and the Host-app opener (Explorer/VS Code/Rider) are hidden; both remain available on desktop;
+- on mobile, the duplicate stock context meter below the chat and the Host-app opener (Explorer/VS Code/Rider) are hidden; the context meter remains available on desktop, and native app launching remains available on the loopback desktop only;
 - on 0.1.5, child-agent status opens the nested catalog in a touch-friendly bottom sheet; on 0.1.7 and 0.2, the native Harness subagent header action owns that navigation;
 - the Harness theme service powers a compact sun/moon action;
 - desktop-only Settings and the nested Local access action are omitted from mobile navigation, while the appearance action remains available;
@@ -119,7 +119,7 @@ The implementation changes presentation, not Harness ownership or behavior:
 - plugin-owned modal drawers contain keyboard focus and return it to the invoking control when closed;
 - existing workspaces remain available, while the misleading remote `Add workspace` directory picker is omitted.
 
-These dark-theme previews were captured from real Harness `0.2.1-rc.5` browser sessions: mobile frames are `430 × 932`, desktop frames are `1440 × 1000`. The isolated profiles contain fictional workspaces, conversations, models, devices, and usage only. The Chinese README has its own Simplified Chinese captures; Russian documentation shares the English images. Subagents use the native Harness header catalog.
+These dark-theme previews were captured from real Harness `0.2.2-rc.1` browser sessions: mobile frames are `430 × 932`, desktop frames are `1440 × 1000`. The isolated profiles contain fictional workspaces, conversations, models, devices, and usage only. The Chinese README has its own Simplified Chinese captures; Russian documentation shares the English images. Subagents use the native Harness header catalog.
 
 | Navigation | Current session | Subagents | Conversation |
 | :---: | :---: | :---: | :---: |

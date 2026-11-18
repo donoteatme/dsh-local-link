@@ -2,6 +2,26 @@
 
 All notable changes to this project are documented here.
 
+## 1.2.6 — 2026-11-18
+
+### Changed
+
+- Updated exact development contracts and Host compatibility metadata to DeepSeek Harness `0.2.2-rc.1`, rechecked as npm `latest` on 2026-11-18. Aligned Cordis 4.1 and Schemastery 3.19; no runtime dependency was added. Historical Host declarations remain unchanged.
+- Updated English, Russian and Simplified Chinese compatibility documentation. Current development/CI uses Node.js 24.9+ to match Harness `0.2.2`; the plugin retains its Node.js 22.19 baseline for earlier declared Hosts.
+- Replaced all 14 README screenshots with real-browser dark-theme captures on `0.2.2-rc.1`: eight mobile PNG originals at `430 × 932` and six desktop JPEG originals at `1440 × 1000`. English and Simplified Chinese use separate fictional profiles; Russian shares the English images. Original image bytes are preserved.
+
+### Fixed
+
+- Restored mobile layout with the `0.2.2` AppFrame: select sidebar/main columns by semantic slots instead of child positions, hide the duplicate native sidebar mask and leading control, and remove the resulting header gap. Session navigation no longer reopens a sidebar that Harness already closed.
+- Preserved the Host-only administration boundary across Typert's dotted-to-slash API migration and the `agentPresets` namespace. Settings, credentials, directory selection and preset authoring remain blocked through the LAN gateway in both access modes.
+- Blocked native `/open-in-app` discovery, icons and launch routes through the gateway and removed the corresponding launcher from remote boot. Loopback desktop launching and ordinary remote session/workspace operations remain available.
+
+### Validation
+
+- Typecheck, all 120 tests across 18 files, and build passed against `0.2.2-rc.1`. The automated suite also passes on Node.js 22 for the retained library baseline; this does not make Harness `0.2.2` compatible with Node.js 22.
+- In live checks on 2026-11-13, EN/ZH pairing returned `204`, native browser handoff `303` / `303`, root `200`, and WebSocket upgrade `101`. Revoke immediately closed the established socket and subsequent access returned `401`. Fifteen legacy/current Host-only API targets and three native app routes returned `403`.
+- Chromium checks on 2026-11-13 passed ten EN/ZH viewports from 320 to 768 CSS pixels, selected-chat QR entry and navigation/session/subagent surfaces at 320 and 430 px, expanded/collapsed Paired devices shortcuts, all three native More menus, Copy link, invitation replacement, QR auto-close, rename/revoke, and diagnostic refresh/copy/clear. Browser JavaScript errors: none. Physical-phone, voice, live model generation and the full historical Host matrix were not rerun.
+
 ## 1.2.5 — 2026-10-30
 
 ### Changed

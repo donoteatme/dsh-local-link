@@ -31,7 +31,7 @@ describe('rewriteAuthenticatedIndex', () => {
     expect(rewriteAuthenticatedIndex('<html>plain</html>')).toBe('<html>plain</html>')
   })
 
-  it('keeps the stock root and third-party views while removing remote Host directory pickers', () => {
+  it('keeps the stock root and third-party views while removing remote Host capabilities', () => {
     const result = rewriteAuthenticatedIndex(index([
       { id: 'dsh-local-link', url: '/plugins/local-link.js', rev: 'local-link', inject: [] },
       { id: '@deepseek-ai/dsh-client-ui-settings', url: '/plugins/settings.js', rev: 'settings', inject: ['connection'] },
@@ -43,6 +43,7 @@ describe('rewriteAuthenticatedIndex', () => {
       },
       { id: '@deepseek-ai/dsh-client-ui-directory-picker-native', url: '/plugins/native-picker.js', rev: 'native-picker' },
       { id: '@deepseek-ai/dsh-client-ui-directory-picker-browse', url: '/plugins/browser-picker.js', rev: 'browser-picker' },
+      { id: '@deepseek-ai/dsh-client-ui-open-in-app', url: '/plugins/open-in-app.js', rev: 'open-in-app' },
       { id: 'third-party-view', url: '/plugins/view.js', rev: 'view', inject: ['@deepseek-ai/dsh-client-ui-conversation'] },
     ]))
     expect(result).toContain('viewport-fit=cover')
@@ -51,6 +52,7 @@ describe('rewriteAuthenticatedIndex', () => {
     expect(result).not.toContain('__DSH_LOCAL_LINK_MOBILE__')
     expect(result).not.toContain('@deepseek-ai/dsh-client-ui-directory-picker-native')
     expect(result).not.toContain('@deepseek-ai/dsh-client-ui-directory-picker-browse')
+    expect(result).not.toContain('@deepseek-ai/dsh-client-ui-open-in-app')
     expect(result).toContain('"id":"third-party-view","url":"/plugins/view.js","rev":"view"')
   })
 
@@ -63,15 +65,16 @@ describe('rewriteAuthenticatedIndex', () => {
     expect(result).not.toContain('@deepseek-ai/dsh-client-ui-directory-picker-native')
   })
 
-  it('keeps alpha application batches aligned when removing native directory pickers', () => {
+  it('keeps application batches aligned when removing Host-only capabilities', () => {
     const result = rewriteAuthenticatedIndex(index([
       { id: 'dsh-local-link' },
       { id: '@deepseek-ai/dsh-client-ui-workspace' },
       { id: '@deepseek-ai/dsh-client-ui-directory-picker-native' },
+      { id: '@deepseek-ai/dsh-client-ui-open-in-app' },
     ], [{
       phase: 'application',
       url: '/plugins/??@deepseek-ai/dsh-client-ui-workspace/client.js,@deepseek-ai/dsh-client-ui-directory-picker-native/client.js&rev=alpha',
-      entries: ['@deepseek-ai/dsh-client-ui-workspace', '@deepseek-ai/dsh-client-ui-directory-picker-native'],
+      entries: ['@deepseek-ai/dsh-client-ui-workspace', '@deepseek-ai/dsh-client-ui-directory-picker-native', '@deepseek-ai/dsh-client-ui-open-in-app'],
     }]))
     const source = result.match(/window\.__DSH_BOOT__\s*=\s*(\{.*?\});/u)?.[1]
     const manifest = JSON.parse(source ?? '{}') as { entries?: Array<{ id?: string }>; batches?: Array<{ entries?: string[]; url?: string }> }

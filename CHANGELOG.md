@@ -2,6 +2,23 @@
 
 All notable changes to this project are documented here.
 
+## 1.2.7 — 2026-11-20
+
+### Changed
+
+- Added the verified DeepSeek Harness `0.2.2-rc.5` to `engines.dsh` and the matching Host peer range, and updated exact development contracts. Earlier declarations, including `0.2.2-rc.1`, are retained. Ordinary rc.5 startup no longer requires a version exemption.
+- Pinned the development graph's OpenTelemetry API to 1.9.1 to satisfy the SDK's `<1.10` peer constraint. Production dependencies are unchanged.
+- Updated English, Russian and Simplified Chinese compatibility documentation. README screenshots retain their original rc.1 capture labels; no runtime UI or trusted-LAN behavior changed.
+
+### Fixed
+
+- npm publication now explicitly supplies the English `README.md` content instead of allowing npm to select `README.zh.md`. All three localized README files remain in the package. The release command restores the original manifest after success, failure or dry-run; a prepublish check rejects accidental publication without the explicit English metadata.
+
+### Validation
+
+- Typecheck, all 123 tests across 19 files, build, package and npm publication dry-run passed with the rc.5 SDK.
+- Isolated EN/ZH checks on rc.5 cover pairing, selected-chat QR handoff, authenticated HTTP/WebSocket access, immediate socket closure on revoke, 15 Host-only RPC variants, three native app routes, new-chat creation, paired-device shortcuts, and ten mobile viewports from 320 to 768 CSS pixels. Physical-phone, voice, model generation and the full historical Host matrix were not rerun.
+
 ## 1.2.6 — 2026-11-18
 
 ### Changed

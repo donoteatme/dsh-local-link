@@ -13,7 +13,7 @@
 
 打开 `Local access` 并扫描二维码后，已配对的浏览器会进入桌面端当前选中的 Harness 会话，并继续使用相同的实时对话、权限、工作区和插件界面。
 
-`1.2.x` 系列支持 DeepSeek Harness `0.2.2-rc.1` 及 `engines.dsh` 声明的较早 Host，让原生 Web 客户端可以在窄屏触控设备上使用。移动视图只调整界面布局，不接管 Harness 的会话、权限或业务逻辑。
+Local Link `1.2.7` 支持 DeepSeek Harness `0.2.2-rc.5` 及 `engines.dsh` 声明的较早 Host，让原生 Web 客户端可以在窄屏触控设备上使用。移动视图只调整界面布局，不接管 Harness 的会话、权限或业务逻辑。
 
 > **安全边界：** 网关使用明文 HTTP，仅适用于可信私有网络。不要将端口暴露到互联网，也不要在公共 Wi-Fi 上使用。
 
@@ -71,11 +71,11 @@ profile 会指向当前 checkout。修改客户端代码后需要重新构建；
 
 ## 兼容性
 
-Local Link `1.2.6` 使用 DeepSeek Harness `0.2.2-rc.1` 的契约构建并完成验证。移动适配器兼容原生侧栏遮罩及导航后的关闭流程。网关同时识别旧版点分隔 API 和新版 `/` 分隔 API；原生应用启动和 Host 管理仍仅限 Harness 所在电脑。保留 `webStartup` / `webRuntime`、公开会话作用域和原生 Settings 导航集成。
+Local Link `1.2.7` 使用 DeepSeek Harness `0.2.2-rc.5` 的契约构建并完成验证，包括无需版本豁免的正常插件启动。移动适配器兼容原生侧栏遮罩及导航后的关闭流程。网关同时识别旧版点分隔 API 和新版 `/` 分隔 API；原生应用启动和 Host 管理仍仅限 Harness 所在电脑。保留 `webStartup` / `webRuntime`、公开会话作用域和原生 Settings 导航集成。
 
 可安装的 DeepSeek Harness 版本范围通过 `package.json` 中的 `engines.dsh` 声明。兼容性按精确发布版本验证，不会因为安装成功或可变的 dist-tag 就推断为兼容。
 
-在 `0.2.2-rc.1` 上已验证局域网配对、二维码打开所选会话、认证 HTTP/WebSocket、撤销设备后立即关闭连接、Host API 和原生应用启动限制，以及 EN/ZH 在 320–768 CSS px 的移动布局。较早 Host 的声明依据[更新日志](CHANGELOG.md)中的历史验收；本次未重新运行全部旧版本矩阵或实体手机验收。普通局域网 HTTP 仍不支持手机麦克风录音；本次发布不提供 HTTPS 或语音输入。
+在 `0.2.2-rc.5` 上已验证配对、二维码打开所选会话、认证 HTTP/WebSocket、撤销设备后立即关闭连接、Host API 和原生应用启动限制、新建会话、已配对设备管理，以及 EN/ZH 在 320–768 CSS px 的移动布局。验证使用独立的虚构数据配置和 loopback 网关。较早 Host 的声明依据[更新日志](CHANGELOG.md)中的历史验收；本次未重新运行全部旧版本矩阵或实体手机验收。普通局域网 HTTP 仍不支持手机麦克风录音；本次发布不提供 HTTPS 或语音输入。
 
 ## 使用方法
 

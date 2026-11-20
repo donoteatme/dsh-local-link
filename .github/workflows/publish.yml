@@ -26,4 +26,4 @@ jobs:
       - name: Require release tag to match package version
         shell: bash
         run: test "${GITHUB_REF_NAME}" = "v$(node -p "require('./package.json').version")"
-      - run: npm publish --access public
+      - run: npm run release:publish

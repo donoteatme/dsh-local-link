@@ -25,4 +25,10 @@ Before opening a pull request:
 
 Remote relays, public tunnels, native applications, device fingerprinting, telemetry, and replacement chat interfaces are outside the project scope unless that boundary is explicitly reconsidered first.
 
+## Releases
+
+Run `npm run release:check` for verification, the production dependency audit, and an npm publication dry-run. After review and explicit release authorization, use `npm run release:publish`; the GitHub release workflow uses the same command.
+
+The publisher explicitly supplies the English README to npm and restores `package.json` after the command finishes, including failures. All localized READMEs stay in the archive. Direct `npm publish` from an unprepared checkout is rejected by `prepublishOnly`, because `readmeFilename` alone does not prevent npm from selecting a translated README.
+
 AI-assisted contributions are welcome. Disclose material agent assistance in the pull request, review the resulting code, and take responsibility for its behavior, licensing, tests, and security just as for any other contribution.

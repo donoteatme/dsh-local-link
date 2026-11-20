@@ -13,7 +13,7 @@ Use the same [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness)
 
 Open `Local access`, scan the QR code, and the paired browser arrives at the desktop's currently selected Harness session with the same live conversation, permissions, workspaces, and plugin surfaces.
 
-The `1.2.x` line supports DeepSeek Harness `0.2.2-rc.1` and the earlier Hosts declared in `engines.dsh`. It reorganizes the stock Web interface into responsive drawers, compact session controls, and touch-friendly actions while keeping the same client, session, plugin slots, permissions, and live agent stream.
+Local Link `1.2.7` supports DeepSeek Harness `0.2.2-rc.5` and the earlier Hosts declared in `engines.dsh`. It reorganizes the stock Web interface into responsive drawers, compact session controls, and touch-friendly actions while keeping the same client, session, plugin slots, permissions, and live agent stream.
 
 > **Security boundary:** the gateway uses plain HTTP and is intended only for a trusted private network. Do not expose its port to the internet or use it on public Wi-Fi.
 
@@ -73,11 +73,11 @@ The profile points at the checkout, so rebuild after changing client code and re
 
 ## Compatibility
 
-Local Link `1.2.6` is built and checked against DeepSeek Harness `0.2.2-rc.1`. Its mobile adapter supports the native sidebar mask and navigation lifecycle. The gateway recognizes both legacy dotted and current slash-based API names, while native app launching and Host administration remain available only on the Harness computer. Existing `webStartup` / `webRuntime`, public Session scopes, and native Settings navigation integrations are retained.
+Local Link `1.2.7` is built and checked against DeepSeek Harness `0.2.2-rc.5`, including ordinary plugin startup without a version exemption. Its mobile adapter supports the native sidebar mask and navigation lifecycle. The gateway recognizes both legacy dotted and current slash-based API names, while native app launching and Host administration remain available only on the Harness computer. Existing `webStartup` / `webRuntime`, public Session scopes, and native Settings navigation integrations are retained.
 
 The installable DeepSeek Harness range is declared in `package.json` through `engines.dsh`. Compatibility is checked against exact releases—not inferred from a successful installation or a moving dist-tag.
 
-Acceptance on `0.2.2-rc.1` covers LAN pairing, selected-chat QR handoff, authenticated HTTP/WebSocket access, immediate socket closure on revoke, Host-only API and native-app restrictions, and mobile layouts at 320–768 CSS pixels in EN and ZH. Earlier Host declarations retain the historical acceptance recorded in the [changelog](CHANGELOG.md); the full old-version matrix and physical-phone checks were not rerun. Mobile microphone capture over plain LAN HTTP remains unsupported; this release adds neither HTTPS nor voice input.
+Acceptance on `0.2.2-rc.5` covers pairing, selected-chat QR handoff, authenticated HTTP/WebSocket access, immediate socket closure on revoke, Host-only API and native-app restrictions, new-chat creation, paired-device controls, and mobile layouts at 320–768 CSS pixels in EN and ZH. These checks used isolated profiles with fictional data and a loopback gateway. Earlier Host declarations retain the historical acceptance recorded in the [changelog](CHANGELOG.md); the full old-version matrix and physical-phone checks were not rerun. Mobile microphone capture over plain LAN HTTP remains unsupported; this release adds neither HTTPS nor voice input.
 
 ## Use
 

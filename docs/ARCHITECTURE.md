@@ -177,7 +177,7 @@ No service discovery, certificate generator, tunnel client, native application, 
 
 ## Compatibility strategy
 
-Local Link `1.2.6` develops against the exact DeepSeek Harness `0.2.2-rc.1` contracts; published `1.2.5` used `0.2.1-rc.5`. The installable Host range is declared by `engines.dsh`. Current development and Harness `0.2.2` require Node.js 24.9+; the plugin's Node.js 22.19 runtime baseline is retained for earlier declared Hosts. Earlier Host acceptance remains historical rather than a freshly rerun full matrix.
+Local Link `1.2.7` develops against the exact DeepSeek Harness `0.2.2-rc.5` contracts; published `1.2.6` used `0.2.2-rc.1`. The installable Host range is declared by `engines.dsh`, including ordinary startup on rc.5 without version exemptions. Current development and Harness `0.2.2` require Node.js 24.9+; the plugin's Node.js 22.19 runtime baseline is retained for earlier declared Hosts. Earlier Host acceptance remains historical rather than a freshly rerun full matrix.
 
 The 0.1.7+ icon exports are weight-named; the client also resolves older size-named exports. Current-session details, QR identity and mobile autofocus use public Session scopes. The invitation observer also mounts on desktop; cleanup cannot erase a newer scope's identity. The legacy subagent sheet is registered only when its catalog actions exist; current Harness owns the native header catalog. Mobile details replace the older `stats` and newer `activity` / `usage` composer pills while desktop contributions remain intact.
 
